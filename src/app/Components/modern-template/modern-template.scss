@@ -1,0 +1,302 @@
+.resume-doc.modern {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  max-width: 780px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.1);
+  min-height: 1000px;
+  font-family: var(--font-family, 'Helvetica Neue', sans-serif);
+  overflow: hidden;
+}
+
+// ── Sidebar ───────────────────────────────────────────
+.m-sidebar {
+  background: #1e1b4b;
+  padding: 32px 18px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;   // ← centers everything horizontally
+  gap: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+// ── Avatar wrap (photo or initial) ────────────────────
+.m-avatar-wrap {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+// Uploaded photo
+.m-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  display: block;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+// Fallback initial letter
+.m-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent, #4f46e5), #818cf8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+// Name and title — centered
+.m-name {
+  font-size: var(--heading-size, 20px);
+  font-weight: var(--heading-weight, 700);
+  margin: 0 0 4px;
+  line-height: 1.2;
+  color: white;
+  word-break: break-word;
+  text-align: center;
+}
+
+.m-title {
+  font-size: 11px;
+  color: #a5b4fc;
+  margin: 0 0 20px;
+  font-style: italic;
+  text-align: center;
+}
+
+// Blocks (contact, skills, languages, soft skills)
+.m-block {
+  margin-bottom: 18px;
+  width: 100%;  // full width so content aligns left within the centered column
+
+  .m-block-title {
+    font-size: var(--section-title-sz, 10px);
+    font-weight: var(--section-title-wt, 700);
+    letter-spacing: 2px;
+    color: #818cf8;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 4px;
+    text-align: left;
+  }
+}
+
+.m-contact {
+  font-size: 10.5px;
+  color: #c7d2fe;
+  margin-bottom: 5px;
+  line-height: 1.4;
+  word-break: break-all;
+  text-align: left;
+}
+
+.m-skill-group {
+  margin-bottom: 10px;
+
+  .m-skill-cat {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #a5b4fc;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+
+  .m-skill {
+    margin-bottom: 5px;
+
+    .m-skill-name {
+      font-size: 11px;
+      color: #e0e7ff;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .m-skill-bar {
+      height: 3px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 2px;
+      overflow: hidden;
+      -webkit-print-color-adjust: exact;
+
+      .m-skill-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent, #4f46e5), #818cf8);
+        border-radius: 2px;
+        transition: width 0.3s ease;
+        -webkit-print-color-adjust: exact;
+      }
+    }
+  }
+}
+
+.m-lang {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+
+  span        { font-size: 11px; color: #c7d2fe; }
+  .m-lang-level { font-size: 10px; color: #818cf8; }
+}
+
+.m-soft-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  .m-soft-tag {
+    font-size: 10px;
+    background: rgba(255,255,255,0.1);
+    color: #c7d2fe;
+    padding: 3px 8px;
+    border-radius: 100px;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+// ── Main content ──────────────────────────────────────
+.m-main {
+  padding: 32px 28px;
+  color: #1a1a2e;
+}
+
+.m-section {
+  margin-bottom: 22px;
+
+  .m-section-title {
+    font-size: var(--section-title-sz, 12px);
+    font-weight: var(--section-title-wt, 700);
+    color: var(--accent, #4f46e5);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #ece8ff;
+    }
+  }
+}
+
+.m-body {
+  font-size: var(--body-size, 13px);
+  color: #4b5563;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.m-entry {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+
+  .m-entry-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent, #4f46e5);
+    flex-shrink: 0;
+    margin-top: 5px;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .m-entry-body {
+    flex: 1;
+
+    .m-entry-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .m-entry-title {
+      font-size: calc(var(--body-size, 13px) + 0.5px);
+      font-weight: 700;
+      color: #0f0f1a;
+    }
+
+    .m-date { font-size: 10.5px; color: #9ca3af; white-space: nowrap; }
+    .m-org  { font-size: 11.5px; color: var(--accent, #4f46e5); display: block; margin-top: 1px; }
+  }
+}
+
+.m-desc { margin-top: 5px; }
+
+.m-bullet {
+  font-size: var(--body-size, 13px);
+  color: #4b5563;
+  line-height: 1.65;
+  padding-left: 13px;
+  position: relative;
+  margin-bottom: 2px;
+  min-height: 4px;
+
+  &.has-bullet::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent, #4f46e5);
+  }
+}
+
+.m-project {
+  background: #f9f9ff;
+  border-left: 3px solid var(--accent, #4f46e5);
+  padding: 10px 12px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 10px;
+  -webkit-print-color-adjust: exact;
+
+  .m-proj-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .m-entry-title { font-size: calc(var(--body-size, 13px) + 0.5px); font-weight: 700; color: #0f0f1a; }
+  .m-proj-link   { font-size: 10.5px; color: var(--accent, #4f46e5); word-break: break-all; }
+  .m-tech        { font-size: 11px; color: #9ca3af; font-style: italic; margin: 0 0 4px; }
+}
+
+.m-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  color: #d1d5db;
+  text-align: center;
+  p { font-size: 13.5px; line-height: 1.65; margin: 0; }
+}
+
+// ── Print ─────────────────────────────────────────────
+@media print {
+  .resume-doc.modern {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+}

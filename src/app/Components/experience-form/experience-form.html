@@ -1,0 +1,65 @@
+<div class="section-form">
+  <div class="section-intro">
+    <span class="section-icon">💼</span>
+    <div>
+      <strong>Work Experience</strong>
+      <span>Most recent jobs first</span>
+    </div>
+  </div>
+
+  <div *ngFor="let exp of resumeData.experiences; let i = index" class="card-item">
+    <div class="card-item-header">
+      <span class="card-index">{{ i + 1 }}</span>
+      <span class="card-item-title">{{ exp.company || 'New Experience' }}</span>
+      <button class="remove-btn" (click)="remove(exp.id)">✕</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Company</label>
+        <input type="text" placeholder="Company Name"
+          [(ngModel)]="exp.company" (ngModelChange)="emit()" />
+      </div>
+      <div class="form-group">
+        <label>Job Title</label>
+        <input type="text" placeholder="Your Role"
+          [(ngModel)]="exp.position" (ngModelChange)="emit()" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Start Date</label>
+        <input type="month"
+          [(ngModel)]="exp.startDate" (ngModelChange)="emit()" />
+      </div>
+      <div class="form-group">
+        <label>End Date</label>
+        <input type="month"
+          [(ngModel)]="exp.endDate" (ngModelChange)="emit()"
+          [disabled]="exp.isCurrent" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="checkbox-label">
+        <input type="checkbox"
+          [(ngModel)]="exp.isCurrent" (ngModelChange)="emit()" />
+        Currently working here
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>Responsibilities & Achievements</label>
+      <textarea rows="5"
+        placeholder="Each point on a new line...&#10;Developed 40+ responsive UI screens...&#10;Reduced load time by 40%..."
+        [(ngModel)]="exp.description" (ngModelChange)="emit()"></textarea>
+    </div>
+  </div>
+
+  <div *ngIf="resumeData.experiences.length === 0" class="empty-hint">
+    No experience added yet. Click below to add your first job.
+  </div>
+
+  <button class="add-btn" (click)="add()">＋ Add Work Experience</button>
+</div>

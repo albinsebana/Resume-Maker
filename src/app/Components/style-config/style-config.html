@@ -1,0 +1,84 @@
+<div class="section-form">
+  <div class="section-intro">
+    <span class="section-icon">🎨</span>
+    <div>
+      <strong>Style & Appearance</strong>
+      <span>Customize fonts, colors and sizes — updates instantly</span>
+    </div>
+  </div>
+
+  <!-- COLORS -->
+  <div class="style-group-title">Accent Color</div>
+  <div class="form-group">
+    <div class="color-row">
+      <input type="color"
+        class="color-picker"
+        [(ngModel)]="resumeData.styleConfig.accentColor"
+        (ngModelChange)="emit()" />
+      <input type="text"
+        class="color-text"
+        [(ngModel)]="resumeData.styleConfig.accentColor"
+        (ngModelChange)="emit()"
+        placeholder="#4f46e5" />
+    </div>
+    <div class="color-presets">
+      <span *ngFor="let c of colorPresets"
+        class="color-dot"
+        [style.background]="c"
+        [class.active]="resumeData.styleConfig.accentColor === c"
+        (click)="setColor(c)">
+      </span>
+    </div>
+  </div>
+
+  <!-- FONT FAMILY -->
+  <div class="style-group-title">Font Family</div>
+  <div class="form-group">
+    <select [(ngModel)]="resumeData.styleConfig.fontFamily" (ngModelChange)="emit()">
+      <option *ngFor="let f of fontFamilies" [value]="f.value">{{ f.label }}</option>
+    </select>
+  </div>
+
+  <!-- HEADING -->
+  <div class="style-group-title">Name / Heading</div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Size: {{ resumeData.styleConfig.headingFontSize }}px</label>
+      <input type="range" min="20" max="48"
+        [(ngModel)]="resumeData.styleConfig.headingFontSize"
+        (ngModelChange)="emit()" />
+    </div>
+    <div class="form-group">
+      <label>Weight</label>
+      <select [(ngModel)]="resumeData.styleConfig.headingFontWeight" (ngModelChange)="emit()">
+        <option *ngFor="let w of fontWeights" [value]="w.value">{{ w.label }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- SECTION TITLES -->
+  <div class="style-group-title">Section Titles</div>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Size: {{ resumeData.styleConfig.sectionTitleSize }}px</label>
+      <input type="range" min="9" max="18"
+        [(ngModel)]="resumeData.styleConfig.sectionTitleSize"
+        (ngModelChange)="emit()" />
+    </div>
+    <div class="form-group">
+      <label>Weight</label>
+      <select [(ngModel)]="resumeData.styleConfig.sectionTitleWeight" (ngModelChange)="emit()">
+        <option *ngFor="let w of fontWeights" [value]="w.value">{{ w.label }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- BODY TEXT -->
+  <div class="style-group-title">Body Text</div>
+  <div class="form-group">
+    <label>Size: {{ resumeData.styleConfig.bodyFontSize }}px</label>
+    <input type="range" min="10" max="16"
+      [(ngModel)]="resumeData.styleConfig.bodyFontSize"
+      (ngModelChange)="emit()" />
+  </div>
+</div>

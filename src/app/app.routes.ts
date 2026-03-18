@@ -16,6 +16,7 @@ export const routes: Routes = [
   },
   {
     path: 'resume-builder',
-    loadComponent: () => import('./resume-builder/resume-builder').then(m => m.ResumeBuilder)
+    loadComponent: () =>
+      import('./resume-builder/resume-builder').then(m => m.ResumeBuilder)
   },
 ];

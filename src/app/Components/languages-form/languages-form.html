@@ -1,0 +1,26 @@
+<div class="section-form">
+  <div class="section-intro">
+    <span class="section-icon">🌐</span>
+    <div>
+      <strong>Languages</strong>
+      <span>Languages you speak</span>
+    </div>
+  </div>
+
+  <div *ngFor="let lang of resumeData.languages" class="inline-row">
+    <input type="text" class="inline-input"
+      placeholder="e.g. English, Malayalam..."
+      [(ngModel)]="lang.name" (ngModelChange)="emit()" />
+    <select class="cat-select"
+      [(ngModel)]="lang.proficiency" (ngModelChange)="emit()">
+      <option *ngFor="let p of proficiencies" [value]="p">{{ p }}</option>
+    </select>
+    <button class="remove-btn" (click)="remove(lang.id)">✕</button>
+  </div>
+
+  <div *ngIf="resumeData.languages.length === 0" class="empty-hint">
+    No languages added yet.
+  </div>
+
+  <button class="add-btn" (click)="add()">＋ Add Language</button>
+</div>

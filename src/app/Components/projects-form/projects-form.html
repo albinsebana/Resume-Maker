@@ -1,0 +1,47 @@
+<div class="section-form">
+  <div class="section-intro">
+    <span class="section-icon">🛠</span>
+    <div>
+      <strong>Projects</strong>
+      <span>Highlight your best work</span>
+    </div>
+  </div>
+
+  <div *ngFor="let proj of resumeData.projects; let i = index" class="card-item">
+    <div class="card-item-header">
+      <span class="card-index">{{ i + 1 }}</span>
+      <span class="card-item-title">{{ proj.name || 'New Project' }}</span>
+      <button class="remove-btn" (click)="remove(proj.id)">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label>Project Name</label>
+      <input type="text" placeholder="e.g. IFIN Dealer Portal"
+        [(ngModel)]="proj.name" (ngModelChange)="emit()" />
+    </div>
+
+    <div class="form-group">
+      <label>GitHub / Live Link <span class="optional">(optional)</span></label>
+      <input type="url" placeholder="https://github.com/username/project"
+        [(ngModel)]="proj.link" (ngModelChange)="emit()" />
+    </div>
+
+    <div class="form-group">
+      <label>Technologies Used</label>
+      <input type="text" placeholder="Angular, Node.js, MongoDB..."
+        [(ngModel)]="proj.technologies" (ngModelChange)="emit()" />
+    </div>
+
+    <div class="form-group">
+      <label>Description & Impact</label>
+      <textarea rows="4" placeholder="What problem does it solve? What did you accomplish?"
+        [(ngModel)]="proj.description" (ngModelChange)="emit()"></textarea>
+    </div>
+  </div>
+
+  <div *ngIf="resumeData.projects.length === 0" class="empty-hint">
+    No projects added yet.
+  </div>
+
+  <button class="add-btn" (click)="add()">＋ Add Project</button>
+</div>

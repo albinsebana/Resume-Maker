@@ -1,0 +1,61 @@
+<div class="section-form">
+  <div class="section-intro">
+    <span class="section-icon">🎓</span>
+    <div>
+      <strong>Education</strong>
+      <span>Degrees, diplomas, and certifications</span>
+    </div>
+  </div>
+
+  <div *ngFor="let edu of resumeData.education; let i = index" class="card-item">
+    <div class="card-item-header">
+      <span class="card-index">{{ i + 1 }}</span>
+      <span class="card-item-title">{{ edu.institution || 'New Education' }}</span>
+      <button class="remove-btn" (click)="remove(edu.id)">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label>Institution / University</label>
+      <input type="text" placeholder="e.g. FISAT, IIT Bombay..."
+        [(ngModel)]="edu.institution" (ngModelChange)="emit()" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Degree</label>
+        <input type="text" placeholder="B.Tech / MCA / MBA..."
+          [(ngModel)]="edu.degree" (ngModelChange)="emit()" />
+      </div>
+      <div class="form-group">
+        <label>Field of Study</label>
+        <input type="text" placeholder="Computer Science..."
+          [(ngModel)]="edu.field" (ngModelChange)="emit()" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Start</label>
+        <input type="month"
+          [(ngModel)]="edu.startDate" (ngModelChange)="emit()" />
+      </div>
+      <div class="form-group">
+        <label>End (or Expected)</label>
+        <input type="month"
+          [(ngModel)]="edu.endDate" (ngModelChange)="emit()" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Grade / CGPA <span class="optional">(optional)</span></label>
+      <input type="text" placeholder="9.4 CGPA / 92% / First Class..."
+        [(ngModel)]="edu.grade" (ngModelChange)="emit()" />
+    </div>
+  </div>
+
+  <div *ngIf="resumeData.education.length === 0" class="empty-hint">
+    No education added yet.
+  </div>
+
+  <button class="add-btn" (click)="add()">＋ Add Education</button>
+</div>

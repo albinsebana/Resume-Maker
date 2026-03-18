@@ -1,0 +1,143 @@
+<div class="resume-doc modern" id="resume-print" [ngStyle]="styles">
+
+  <!-- ═══════ SIDEBAR ═══════ -->
+  <div class="m-sidebar">
+
+    <!-- Photo or Initial Avatar — CENTERED -->
+    <div class="m-avatar-wrap">
+      <img *ngIf="resumeData.personalInfo.photo"
+        [src]="resumeData.personalInfo.photo"
+        class="m-photo" alt="Profile Photo" />
+      <div *ngIf="!resumeData.personalInfo.photo" class="m-avatar">
+        {{ (resumeData.personalInfo.fullName || 'Y')[0].toUpperCase() }}
+      </div>
+    </div>
+
+    <h1 class="m-name">{{ resumeData.personalInfo.fullName || 'Your Name' }}</h1>
+    <p class="m-title">{{ resumeData.personalInfo.jobTitle }}</p>
+
+    <!-- Contact -->
+    <div class="m-block"
+      *ngIf="resumeData.personalInfo.email || resumeData.personalInfo.phone
+          || resumeData.personalInfo.location || resumeData.personalInfo.website">
+      <div class="m-block-title">CONTACT</div>
+      <div *ngIf="resumeData.personalInfo.email"    class="m-contact">✉ {{ resumeData.personalInfo.email }}</div>
+      <div *ngIf="resumeData.personalInfo.phone"    class="m-contact">📞 {{ resumeData.personalInfo.phone }}</div>
+      <div *ngIf="resumeData.personalInfo.location" class="m-contact">📍 {{ resumeData.personalInfo.location }}</div>
+      <div *ngIf="resumeData.personalInfo.website"  class="m-contact">🔗 {{ resumeData.personalInfo.website }}</div>
+    </div>
+
+    <!-- Skills -->
+    <div *ngIf="resumeData.skills.length > 0" class="m-block">
+      <div class="m-block-title">TECHNICAL SKILLS</div>
+      <div *ngFor="let cat of skillCategories" class="m-skill-group">
+        <div class="m-skill-cat">{{ cat }}</div>
+        <div *ngFor="let skill of getSkillsByCategory(cat)" class="m-skill">
+          <span class="m-skill-name">{{ skill.name }}</span>
+          <div class="m-skill-bar">
+            <div class="m-skill-fill" [style.width]="(skill.level / 5 * 100) + '%'"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Languages -->
+    <div *ngIf="resumeData.languages.length > 0" class="m-block">
+      <div class="m-block-title">LANGUAGES</div>
+      <div *ngFor="let lang of resumeData.languages" class="m-lang">
+        <span>{{ lang.name }}</span>
+        <span class="m-lang-level">{{ lang.proficiency }}</span>
+      </div>
+    </div>
+
+    <!-- Soft Skills -->
+    <div *ngIf="resumeData.softSkills.length > 0" class="m-block">
+      <div class="m-block-title">SOFT SKILLS</div>
+      <div class="m-soft-list">
+        <span *ngFor="let ss of resumeData.softSkills" class="m-soft-tag">{{ ss.name }}</span>
+      </div>
+    </div>
+
+  </div><!-- /m-sidebar -->
+
+
+  <!-- ═══════ MAIN CONTENT ═══════ -->
+  <div class="m-main">
+
+    <!-- Summary -->
+    <div *ngIf="resumeData.personalInfo.summary" class="m-section">
+      <div class="m-section-title">ABOUT ME</div>
+      <p class="m-body">{{ resumeData.personalInfo.summary }}</p>
+    </div>
+
+    <!-- Experience -->
+    <div *ngIf="resumeData.experiences.length > 0" class="m-section">
+      <div class="m-section-title">PROFESSIONAL EXPERIENCE</div>
+      <div *ngFor="let exp of resumeData.experiences" class="m-entry">
+        <div class="m-entry-dot"></div>
+        <div class="m-entry-body">
+          <div class="m-entry-top">
+            <strong class="m-entry-title">{{ exp.position }}</strong>
+            <span class="m-date">
+              {{ formatDate(exp.startDate) }} –
+              {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate) }}
+            </span>
+          </div>
+          <em class="m-org">{{ exp.company }}</em>
+          <div *ngIf="exp.description" class="m-desc">
+            <div *ngFor="let line of exp.description.split('\n')"
+              class="m-bullet" [class.has-bullet]="line.trim().length > 0">
+              {{ line }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects -->
+    <div *ngIf="resumeData.projects.length > 0" class="m-section">
+      <div class="m-section-title">PROJECT EXPERIENCE</div>
+      <div *ngFor="let proj of resumeData.projects" class="m-project">
+        <div class="m-proj-header">
+          <strong class="m-entry-title">{{ proj.name }}</strong>
+          <span *ngIf="proj.link" class="m-proj-link">{{ proj.link }}</span>
+        </div>
+        <p *ngIf="proj.technologies" class="m-tech">{{ proj.technologies }}</p>
+        <div *ngIf="proj.description" class="m-desc">
+          <div *ngFor="let line of proj.description.split('\n')"
+            class="m-bullet" [class.has-bullet]="line.trim().length > 0">
+            {{ line }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Education -->
+    <div *ngIf="resumeData.education.length > 0" class="m-section">
+      <div class="m-section-title">EDUCATION</div>
+      <div *ngFor="let edu of resumeData.education" class="m-entry">
+        <div class="m-entry-dot"></div>
+        <div class="m-entry-body">
+          <div class="m-entry-top">
+            <strong class="m-entry-title">
+              {{ edu.degree }}
+              <ng-container *ngIf="edu.field"> ({{ edu.field }})</ng-container>
+            </strong>
+            <span class="m-date">{{ formatYear(edu.startDate) }} – {{ formatYear(edu.endDate) }}</span>
+          </div>
+          <em class="m-org">
+            {{ edu.institution }}
+            <ng-container *ngIf="edu.grade"> · {{ edu.grade }}</ng-container>
+          </em>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="isEmpty" class="m-empty">
+      <p>Fill in your details to see the Modern template.</p>
+    </div>
+
+  </div><!-- /m-main -->
+
+</div>

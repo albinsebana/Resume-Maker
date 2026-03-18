@@ -1,0 +1,24 @@
+<div class="section-form">
+  <div class="section-intro">
+    <span class="section-icon">🤝</span>
+    <div>
+      <strong>Soft Skills</strong>
+      <span>Your interpersonal strengths</span>
+    </div>
+  </div>
+
+  <div class="soft-grid">
+    <div *ngFor="let ss of resumeData.softSkills" class="inline-row">
+      <input type="text" class="inline-input"
+        placeholder="e.g. Problem Solving, Leadership..."
+        [(ngModel)]="ss.name" (ngModelChange)="emit()" />
+      <button class="remove-btn" (click)="remove(ss.id)">✕</button>
+    </div>
+  </div>
+
+  <div *ngIf="resumeData.softSkills.length === 0" class="empty-hint">
+    No soft skills added yet.
+  </div>
+
+  <button class="add-btn" (click)="add()">＋ Add Soft Skill</button>
+</div>

@@ -6,6 +6,11 @@
     "analytics": "e7e49661-a142-483a-8e7d-1a509d867240"
   },
   "newProjectRoot": "projects",
+  "schematics": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
   "projects": {
     "resume-maker": {
       "projectType": "application",

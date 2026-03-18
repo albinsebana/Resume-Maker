@@ -1,0 +1,107 @@
+<div class="resume-doc minimal" id="resume-print" [ngStyle]="styles">
+
+  <!-- HEADER -->
+  <div class="mn-header">
+    <div class="mn-header-left">
+      <h1 class="mn-name">{{ resumeData.personalInfo.fullName || 'Your Name' }}</h1>
+      <p class="mn-title">{{ resumeData.personalInfo.jobTitle }}</p>
+    </div>
+    <div class="mn-contacts">
+      <span *ngIf="resumeData.personalInfo.email">{{ resumeData.personalInfo.email }}</span>
+      <span *ngIf="resumeData.personalInfo.phone">{{ resumeData.personalInfo.phone }}</span>
+      <span *ngIf="resumeData.personalInfo.location">{{ resumeData.personalInfo.location }}</span>
+      <span *ngIf="resumeData.personalInfo.website">{{ resumeData.personalInfo.website }}</span>
+    </div>
+  </div>
+
+  <div class="mn-rule"></div>
+
+  <!-- SUMMARY -->
+  <p *ngIf="resumeData.personalInfo.summary" class="mn-summary">
+    {{ resumeData.personalInfo.summary }}
+  </p>
+
+  <!-- EXPERIENCE -->
+  <div *ngIf="resumeData.experiences.length > 0" class="mn-section">
+    <div class="mn-section-title">EXPERIENCE</div>
+    <div *ngFor="let exp of resumeData.experiences" class="mn-entry">
+      <div class="mn-entry-row">
+        <div class="mn-entry-left">
+          <strong>{{ exp.position }}</strong>
+          <span class="mn-sep">·</span>
+          <span class="mn-org">{{ exp.company }}</span>
+        </div>
+        <span class="mn-date">
+          {{ formatDate(exp.startDate) }} — {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate) }}
+        </span>
+      </div>
+      <div *ngIf="exp.description" class="mn-desc">
+        <div *ngFor="let line of exp.description.split('\n')"
+          class="mn-bullet" [class.has-bullet]="line.trim().length > 0">{{ line }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div *ngIf="resumeData.projects.length > 0" class="mn-section">
+    <div class="mn-section-title">PROJECTS</div>
+    <div *ngFor="let proj of resumeData.projects" class="mn-entry">
+      <div class="mn-entry-row">
+        <div class="mn-entry-left">
+          <strong>{{ proj.name }}</strong>
+          <span *ngIf="proj.technologies" class="mn-tech">· {{ proj.technologies }}</span>
+        </div>
+        <span *ngIf="proj.link" class="mn-link">{{ proj.link }}</span>
+      </div>
+      <div *ngIf="proj.description" class="mn-desc">
+        <div *ngFor="let line of proj.description.split('\n')"
+          class="mn-bullet" [class.has-bullet]="line.trim().length > 0">{{ line }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div *ngIf="resumeData.skills.length > 0" class="mn-section">
+    <div class="mn-section-title">SKILLS</div>
+    <div *ngFor="let cat of skillCategories" class="mn-skill-row">
+      <span class="mn-skill-cat">{{ cat }}</span>
+      <span class="mn-skill-list">{{ getSkillsByCategory(cat).map(s => s.name).join(' · ') }}</span>
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div *ngIf="resumeData.education.length > 0" class="mn-section">
+    <div class="mn-section-title">EDUCATION</div>
+    <div *ngFor="let edu of resumeData.education" class="mn-entry">
+      <div class="mn-entry-row">
+        <div class="mn-entry-left">
+          <strong>{{ edu.degree }}<ng-container *ngIf="edu.field">, {{ edu.field }}</ng-container></strong>
+          <span class="mn-sep">·</span>
+          <span class="mn-org">{{ edu.institution }}</span>
+        </div>
+        <span class="mn-date">{{ formatYear(edu.startDate) }} — {{ formatYear(edu.endDate) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANGUAGES + SOFT SKILLS -->
+  <div class="mn-bottom-row"
+    *ngIf="resumeData.languages.length > 0 || resumeData.softSkills.length > 0">
+    <div *ngIf="resumeData.languages.length > 0" class="mn-section mn-half">
+      <div class="mn-section-title">LANGUAGES</div>
+      <div class="mn-inline-list">
+        <span *ngFor="let l of resumeData.languages">{{ l.name }} ({{ l.proficiency }})</span>
+      </div>
+    </div>
+    <div *ngIf="resumeData.softSkills.length > 0" class="mn-section mn-half">
+      <div class="mn-section-title">SOFT SKILLS</div>
+      <div class="mn-inline-list">
+        <span *ngFor="let ss of resumeData.softSkills">{{ ss.name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isEmpty" class="mn-empty">
+    <p>Fill in your details to see the Minimal template.</p>
+  </div>
+</div>

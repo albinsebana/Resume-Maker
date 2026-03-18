@@ -2,6 +2,7 @@
 
   <!-- ═══════ LEFT PANEL ═══════ -->
   <div class="form-panel">
+
     <div class="form-header">
       <div class="header-top">
         <div>
@@ -9,442 +10,131 @@
           <p>Live preview updates as you type</p>
         </div>
         <div class="header-actions">
-          <span class="save-indicator" [class.saving]="saveStatus==='saving'" [class.saved]="saveStatus==='saved'">
-            <span *ngIf="saveStatus==='saving'">⟳ Saving…</span>
-            <span *ngIf="saveStatus==='saved'">✓ Saved</span>
+          <span class="save-indicator"
+            [class.saving]="saveStatus === 'saving'"
+            [class.saved]="saveStatus === 'saved'">
+            <span *ngIf="saveStatus === 'saving'">⟳ Saving…</span>
+            <span *ngIf="saveStatus === 'saved'">✓ Saved</span>
           </span>
           <button class="clear-btn" (click)="clearAll()">🗑 Reset</button>
         </div>
       </div>
     </div>
 
+    <!-- Section Tabs -->
     <div class="section-tabs">
-      <button *ngFor="let s of sections" class="tab-btn"
-        [class.active]="activeSection === s.id" (click)="setActiveSection(s.id)">
+      <button *ngFor="let s of sections"
+        class="tab-btn"
+        [class.active]="activeSection === s.id"
+        (click)="setSection(s.id)">
         {{ s.label }}
       </button>
     </div>
 
+    <!-- Section Components -->
     <div class="form-body">
+      <app-personal-form
+        *ngIf="activeSection === 'personal'"
+        [resumeData]="resumeData"
+        (dataChange)="onDataChange($event)">
+      </app-personal-form>
 
-      <!-- PERSONAL -->
-      <ng-container *ngIf="activeSection === 'personal'">
-        <div class="section-intro"><span class="section-icon">👤</span><div><strong>Personal Information</strong><span>Your contact details and introduction</span></div></div>
-        <div class="form-group"><label>Full Name *</label><input type="text" placeholder="e.g. Arun Kumar" [(ngModel)]="resumeData.personalInfo.fullName" (ngModelChange)="onDataChange()" /></div>
-        <div class="form-group"><label>Job Title</label><input type="text" placeholder="Software Developer" [(ngModel)]="resumeData.personalInfo.jobTitle" (ngModelChange)="onDataChange()" /></div>
-        <div class="form-row">
-          <div class="form-group"><label>Email *</label><input type="email" placeholder="you@example.com" [(ngModel)]="resumeData.personalInfo.email" (ngModelChange)="onDataChange()" /></div>
-          <div class="form-group"><label>Phone</label><input type="tel" placeholder="+91 98765 43210" [(ngModel)]="resumeData.personalInfo.phone" (ngModelChange)="onDataChange()" /></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Location</label><input type="text" placeholder="Kochi, India" [(ngModel)]="resumeData.personalInfo.location" (ngModelChange)="onDataChange()" /></div>
-          <div class="form-group"><label>LinkedIn / Website</label><input type="url" placeholder="linkedin.com/in/..." [(ngModel)]="resumeData.personalInfo.website" (ngModelChange)="onDataChange()" /></div>
-        </div>
-        <div class="form-group"><label>Professional Summary</label><textarea rows="5" placeholder="Brief summary of your experience and strengths..." [(ngModel)]="resumeData.personalInfo.summary" (ngModelChange)="onDataChange()"></textarea></div>
-      </ng-container>
+      <app-experience-form
+        *ngIf="activeSection === 'experience'"
+        [resumeData]="resumeData"
+        (dataChange)="onDataChange($event)">
+      </app-experience-form>
 
-      <!-- EXPERIENCE -->
-      <ng-container *ngIf="activeSection === 'experience'">
-        <div class="section-intro"><span class="section-icon">💼</span><div><strong>Work Experience</strong><span>Most recent jobs first</span></div></div>
-        <div *ngFor="let exp of resumeData.experiences; let i = index" class="card-item">
-          <div class="card-item-header">
-            <span class="card-index">{{ i + 1 }}</span>
-            <span class="card-item-title">{{ exp.company || 'New Experience' }}</span>
-            <button class="remove-btn" (click)="removeExperience(exp.id)">✕</button>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Company</label><input type="text" placeholder="Company Name" [(ngModel)]="exp.company" (ngModelChange)="onDataChange()" /></div>
-            <div class="form-group"><label>Job Title</label><input type="text" placeholder="Your Role" [(ngModel)]="exp.position" (ngModelChange)="onDataChange()" /></div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Start Date</label><input type="month" [(ngModel)]="exp.startDate" (ngModelChange)="onDataChange()" /></div>
-            <div class="form-group"><label>End Date</label><input type="month" [(ngModel)]="exp.endDate" (ngModelChange)="onDataChange()" [disabled]="exp.isCurrent" /></div>
-          </div>
-          <div class="form-group">
-            <label class="checkbox-label"><input type="checkbox" [(ngModel)]="exp.isCurrent" (ngModelChange)="onDataChange()" /> Currently working here</label>
-          </div>
-          <div class="form-group"><label>Responsibilities & Achievements</label><textarea rows="5" placeholder="Each point on a new line..." [(ngModel)]="exp.description" (ngModelChange)="onDataChange()"></textarea></div>
-        </div>
-        <div *ngIf="resumeData.experiences.length === 0" class="empty-section-hint">No experience added yet.</div>
-        <button class="add-btn" (click)="addExperience()">＋ Add Work Experience</button>
-      </ng-container>
+      <app-education-form
+        *ngIf="activeSection === 'education'"
+        [resumeData]="resumeData"
+        (dataChange)="onDataChange($event)">
+      </app-education-form>
 
-      <!-- EDUCATION -->
-      <ng-container *ngIf="activeSection === 'education'">
-        <div class="section-intro"><span class="section-icon">🎓</span><div><strong>Education</strong><span>Degrees and certifications</span></div></div>
-        <div *ngFor="let edu of resumeData.education; let i = index" class="card-item">
-          <div class="card-item-header">
-            <span class="card-index">{{ i + 1 }}</span>
-            <span class="card-item-title">{{ edu.institution || 'New Education' }}</span>
-            <button class="remove-btn" (click)="removeEducation(edu.id)">✕</button>
-          </div>
-          <div class="form-group"><label>Institution</label><input type="text" placeholder="University Name" [(ngModel)]="edu.institution" (ngModelChange)="onDataChange()" /></div>
-          <div class="form-row">
-            <div class="form-group"><label>Degree</label><input type="text" placeholder="B.Tech / MCA..." [(ngModel)]="edu.degree" (ngModelChange)="onDataChange()" /></div>
-            <div class="form-group"><label>Field of Study</label><input type="text" placeholder="Computer Science..." [(ngModel)]="edu.field" (ngModelChange)="onDataChange()" /></div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Start</label><input type="month" [(ngModel)]="edu.startDate" (ngModelChange)="onDataChange()" /></div>
-            <div class="form-group"><label>End</label><input type="month" [(ngModel)]="edu.endDate" (ngModelChange)="onDataChange()" /></div>
-          </div>
-          <div class="form-group"><label>Grade / CGPA</label><input type="text" placeholder="9.4 CGPA / 92%..." [(ngModel)]="edu.grade" (ngModelChange)="onDataChange()" /></div>
-        </div>
-        <div *ngIf="resumeData.education.length === 0" class="empty-section-hint">No education added yet.</div>
-        <button class="add-btn" (click)="addEducation()">＋ Add Education</button>
-      </ng-container>
+      <app-skills-form
+        *ngIf="activeSection === 'skills'"
+        [resumeData]="resumeData"
+        (dataChange)="onDataChange($event)">
+      </app-skills-form>
 
-      <!-- SKILLS -->
-      <ng-container *ngIf="activeSection === 'skills'">
-        <div class="section-intro"><span class="section-icon">⚡</span><div><strong>Technical Skills</strong><span>Grouped by category</span></div></div>
-        <div *ngFor="let skill of resumeData.skills" class="skill-form-row">
-          <select class="skill-cat-select" [(ngModel)]="skill.category" (ngModelChange)="onDataChange()">
-            <option *ngFor="let cat of allCategories" [value]="cat">{{ cat }}</option>
-            <option value="Other">Other</option>
-          </select>
-          <input *ngIf="skill.category === 'Other'" type="text" class="skill-input skill-input-half"
-            placeholder="Category name (optional)" [(ngModel)]="skill.customCategory" (ngModelChange)="onDataChange()" />
-          <input type="text" class="skill-input" placeholder="Skill name..." [(ngModel)]="skill.name" (ngModelChange)="onDataChange()" />
-          <button class="remove-btn" (click)="removeSkill(skill.id)">✕</button>
-        </div>
-        <div *ngIf="resumeData.skills.length === 0" class="empty-section-hint">No skills added yet.</div>
-        <button class="add-btn" (click)="addSkill()">＋ Add Skill</button>
-      </ng-container>
+      <app-projects-form
+        *ngIf="activeSection === 'projects'"
+        [resumeData]="resumeData"
+        (dataChange)="onDataChange($event)">
+      </app-projects-form>
 
-      <!-- PROJECTS -->
-      <ng-container *ngIf="activeSection === 'projects'">
-        <div class="section-intro"><span class="section-icon">🛠</span><div><strong>Projects</strong><span>Your best work</span></div></div>
-        <div *ngFor="let proj of resumeData.projects; let i = index" class="card-item">
-          <div class="card-item-header">
-            <span class="card-index">{{ i + 1 }}</span>
-            <span class="card-item-title">{{ proj.name || 'New Project' }}</span>
-            <button class="remove-btn" (click)="removeProject(proj.id)">✕</button>
-          </div>
-          <div class="form-group"><label>Project Name</label><input type="text" placeholder="Project Name" [(ngModel)]="proj.name" (ngModelChange)="onDataChange()" /></div>
-          <div class="form-group"><label>GitHub / Live Link <span class="optional-label">(optional)</span></label><input type="url" placeholder="https://github.com/username/project" [(ngModel)]="proj.link" (ngModelChange)="onDataChange()" /></div>
-          <div class="form-group"><label>Technologies</label><input type="text" placeholder="Angular, Node.js, MongoDB..." [(ngModel)]="proj.technologies" (ngModelChange)="onDataChange()" /></div>
-          <div class="form-group"><label>Description</label><textarea rows="4" placeholder="What did you build and what impact did it have?" [(ngModel)]="proj.description" (ngModelChange)="onDataChange()"></textarea></div>
-        </div>
-        <div *ngIf="resumeData.projects.length === 0" class="empty-section-hint">No projects added yet.</div>
-        <button class="add-btn" (click)="addProject()">＋ Add Project</button>
-      </ng-container>
+      <app-languages-form
+        *ngIf="activeSection === 'languages'"
+        [resumeData]="resumeData"
+        (dataChange)="onDataChange($event)">
+      </app-languages-form>
 
-      <!-- LANGUAGES -->
-      <ng-container *ngIf="activeSection === 'languages'">
-        <div class="section-intro"><span class="section-icon">🌐</span><div><strong>Languages</strong><span>Languages you speak</span></div></div>
-        <div *ngFor="let lang of resumeData.languages" class="skill-form-row">
-          <input type="text" class="skill-input" placeholder="Language name" [(ngModel)]="lang.name" (ngModelChange)="onDataChange()" />
-          <select class="skill-cat-select" [(ngModel)]="lang.proficiency" (ngModelChange)="onDataChange()">
-            <option>Native</option>
-            <option>Professional</option>
-            <option>Conversational</option>
-            <option>Basic</option>
-          </select>
-          <button class="remove-btn" (click)="removeLanguage(lang.id)">✕</button>
-        </div>
-        <div *ngIf="resumeData.languages.length === 0" class="empty-section-hint">No languages added yet.</div>
-        <button class="add-btn" (click)="addLanguage()">＋ Add Language</button>
-      </ng-container>
+      <app-softskills-form
+        *ngIf="activeSection === 'softskills'"
+        [resumeData]="resumeData"
+        (dataChange)="onDataChange($event)">
+      </app-softskills-form>
 
-      <!-- SOFT SKILLS -->
-      <ng-container *ngIf="activeSection === 'softskills'">
-        <div class="section-intro"><span class="section-icon">🤝</span><div><strong>Soft Skills</strong><span>Your interpersonal strengths</span></div></div>
-        <div class="soft-skills-form">
-          <div *ngFor="let ss of resumeData.softSkills" class="skill-form-row">
-            <input type="text" class="skill-input" placeholder="e.g. Problem Solving" [(ngModel)]="ss.name" (ngModelChange)="onDataChange()" />
-            <button class="remove-btn" (click)="removeSoftSkill(ss.id)">✕</button>
-          </div>
-        </div>
-        <div *ngIf="resumeData.softSkills.length === 0" class="empty-section-hint">No soft skills added yet.</div>
-        <button class="add-btn" (click)="addSoftSkill()">＋ Add Soft Skill</button>
-      </ng-container>
-
-      <!-- STYLE CONFIG -->
-      <ng-container *ngIf="activeSection === 'style'">
-        <div class="section-intro"><span class="section-icon">🎨</span><div><strong>Style & Appearance</strong><span>Customize fonts, colors and sizes</span></div></div>
-
-        <div class="style-section-title">Colors</div>
-        <div class="form-group">
-          <label>Accent Color</label>
-          <div class="color-row">
-            <input type="color" [(ngModel)]="resumeData.styleConfig.accentColor" (ngModelChange)="onDataChange()" class="color-picker" />
-            <input type="text" [(ngModel)]="resumeData.styleConfig.accentColor" (ngModelChange)="onDataChange()" class="color-text" placeholder="#4f46e5" />
-            <div class="color-presets">
-              <span *ngFor="let c of ['#4f46e5','#0ea5e9','#10b981','#ef4444','#f59e0b','#8b5cf6','#000000']"
-                class="color-dot" [style.background]="c" (click)="resumeData.styleConfig.accentColor = c; onDataChange()"></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="style-section-title">Font</div>
-        <div class="form-group">
-          <label>Font Family</label>
-          <select [(ngModel)]="resumeData.styleConfig.fontFamily" (ngModelChange)="onDataChange()" class="style-select">
-            <option *ngFor="let f of fontFamilies" [value]="f.value">{{ f.label }}</option>
-          </select>
-        </div>
-
-        <div class="style-section-title">Heading (Your Name)</div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Font Size: {{ resumeData.styleConfig.headingFontSize }}px</label>
-            <input type="range" min="20" max="48" [(ngModel)]="resumeData.styleConfig.headingFontSize" (ngModelChange)="onDataChange()" />
-          </div>
-          <div class="form-group">
-            <label>Font Weight</label>
-            <select [(ngModel)]="resumeData.styleConfig.headingFontWeight" (ngModelChange)="onDataChange()" class="style-select">
-              <option value="400">Regular (400)</option>
-              <option value="600">Semi Bold (600)</option>
-              <option value="700">Bold (700)</option>
-              <option value="800">Extra Bold (800)</option>
-              <option value="900">Black (900)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="style-section-title">Section Titles</div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Font Size: {{ resumeData.styleConfig.sectionTitleSize }}px</label>
-            <input type="range" min="9" max="18" [(ngModel)]="resumeData.styleConfig.sectionTitleSize" (ngModelChange)="onDataChange()" />
-          </div>
-          <div class="form-group">
-            <label>Font Weight</label>
-            <select [(ngModel)]="resumeData.styleConfig.sectionTitleWeight" (ngModelChange)="onDataChange()" class="style-select">
-              <option value="400">Regular (400)</option>
-              <option value="600">Semi Bold (600)</option>
-              <option value="700">Bold (700)</option>
-              <option value="800">Extra Bold (800)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="style-section-title">Body Text</div>
-        <div class="form-group">
-          <label>Font Size: {{ resumeData.styleConfig.bodyFontSize }}px</label>
-          <input type="range" min="10" max="16" [(ngModel)]="resumeData.styleConfig.bodyFontSize" (ngModelChange)="onDataChange()" />
-        </div>
-
-        <div class="style-preview-note">Changes apply instantly in the preview →</div>
-      </ng-container>
-
+      <app-style-config
+        *ngIf="activeSection === 'style'"
+        [resumeData]="resumeData"
+        (dataChange)="onDataChange($event)">
+      </app-style-config>
     </div>
-  </div>
+
+  </div><!-- /form-panel -->
+
 
   <!-- ═══════ RIGHT PANEL ═══════ -->
   <div class="preview-panel">
+
     <div class="preview-toolbar">
       <div class="toolbar-left">
-        <span class="preview-label">Live Preview</span>
+        <span class="preview-label">Preview</span>
         <div class="template-switcher">
-          <button *ngFor="let t of templates" class="tpl-btn"
-            [class.active]="activeTemplate === t.id" (click)="setTemplate(t.id)">
+          <button *ngFor="let t of templates"
+            class="tpl-btn"
+            [class.active]="activeTemplate === t.id"
+            (click)="setTemplate(t.id)">
             {{ t.label }}
             <small>{{ t.desc }}</small>
           </button>
         </div>
       </div>
-      <button class="print-btn" (click)="printResume()">
-        🖨 Print / Save PDF
-      </button>
+
+      <!-- Download toolbar replaces the old print button -->
+      <app-download-toolbar
+        [resumeName]="resumeData.personalInfo.fullName || 'resume'">
+      </app-download-toolbar>
     </div>
 
     <div class="resume-scroll">
+      <app-classic-template
+        *ngIf="activeTemplate === 'classic'"
+        [resumeData]="resumeData">
+      </app-classic-template>
 
-      <!-- ══════ CLASSIC TEMPLATE ══════ -->
-      <div *ngIf="activeTemplate === 'classic'" class="resume-doc classic" id="resume-print" [ngStyle]="resumeStyles">
+      <app-modern-template
+        *ngIf="activeTemplate === 'modern'"
+        [resumeData]="resumeData">
+      </app-modern-template>
 
-        <div class="c-header">
-          <h1 class="c-name">{{ resumeData.personalInfo.fullName || 'Your Full Name' }}</h1>
-          <p class="c-jobtitle">{{ resumeData.personalInfo.jobTitle }}</p>
-          <div class="c-contacts">
-            <span *ngIf="resumeData.personalInfo.email">✉ {{ resumeData.personalInfo.email }}</span>
-            <span *ngIf="resumeData.personalInfo.phone">📞 {{ resumeData.personalInfo.phone }}</span>
-            <span *ngIf="resumeData.personalInfo.location">📍 {{ resumeData.personalInfo.location }}</span>
-            <span *ngIf="resumeData.personalInfo.website">🔗 {{ resumeData.personalInfo.website }}</span>
-          </div>
-        </div>
+      <app-minimal-template
+        *ngIf="activeTemplate === 'minimal'"
+        [resumeData]="resumeData">
+      </app-minimal-template>
 
-        <div *ngIf="resumeData.personalInfo.summary" class="c-section">
-          <div class="c-section-title">SUMMARY</div>
-          <p class="c-body">{{ resumeData.personalInfo.summary }}</p>
-        </div>
+      <app-executive-template
+        *ngIf="activeTemplate === 'executive'"
+        [resumeData]="resumeData">
+      </app-executive-template>
 
-        <div *ngIf="resumeData.experiences.length > 0" class="c-section">
-          <div class="c-section-title">PROFESSIONAL EXPERIENCE</div>
-          <div *ngFor="let exp of resumeData.experiences" class="c-entry">
-            <div class="c-entry-top">
-              <div class="c-entry-left">
-                <strong class="c-entry-title">{{ exp.position }}</strong>
-                <span class="c-entry-org">{{ exp.company }}</span>
-              </div>
-              <span class="c-date">{{ formatDate(exp.startDate) }} – {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate) }}</span>
-            </div>
-            <div *ngIf="exp.description" class="c-body c-desc">
-              <div *ngFor="let line of exp.description.split('\n')" class="c-bullet" [class.has-bullet]="line.trim().length > 0">{{ line }}</div>
-            </div>
-          </div>
-        </div>
-
-        <div *ngIf="resumeData.projects.length > 0" class="c-section">
-          <div class="c-section-title">PROJECT EXPERIENCE</div>
-          <div *ngFor="let proj of resumeData.projects" class="c-entry">
-            <div class="c-entry-top">
-              <div class="c-entry-left">
-                <strong class="c-entry-title">{{ proj.name }}</strong>
-                <span *ngIf="proj.technologies" class="c-tech">{{ proj.technologies }}</span>
-              </div>
-              <span *ngIf="proj.link" class="c-link">{{ proj.link }}</span>
-            </div>
-            <div *ngIf="proj.description" class="c-body c-desc">
-              <div *ngFor="let line of proj.description.split('\n')" class="c-bullet" [class.has-bullet]="line.trim().length > 0">{{ line }}</div>
-            </div>
-          </div>
-        </div>
-
-        <div *ngIf="resumeData.skills.length > 0" class="c-section">
-          <div class="c-section-title">TECHNICAL SKILLS</div>
-          <div *ngFor="let cat of skillCategories" class="c-skill-group">
-            <div class="c-skill-cat">{{ cat }}</div>
-            <div class="c-skill-tags">
-              <span *ngFor="let skill of getSkillsByCategory(cat)" class="c-skill-tag">{{ skill.name }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div *ngIf="resumeData.education.length > 0" class="c-section">
-          <div class="c-section-title">EDUCATION</div>
-          <div *ngFor="let edu of resumeData.education" class="c-entry">
-            <div class="c-entry-top">
-              <div class="c-entry-left">
-                <strong class="c-entry-title">{{ edu.degree }}<ng-container *ngIf="edu.field"> ({{ edu.field }})</ng-container></strong>
-                <span class="c-entry-org">{{ edu.institution }}</span>
-              </div>
-              <span class="c-date">{{ formatYear(edu.startDate) }} – {{ formatYear(edu.endDate) }}<ng-container *ngIf="edu.grade"> · {{ edu.grade }}</ng-container></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="c-two-col" *ngIf="resumeData.languages.length > 0 || resumeData.softSkills.length > 0">
-          <div *ngIf="resumeData.languages.length > 0" class="c-section c-half">
-            <div class="c-section-title">LANGUAGES</div>
-            <div *ngFor="let lang of resumeData.languages" class="c-lang-row">
-              <span class="c-lang-name">{{ lang.name }}</span>
-              <span class="c-lang-level">{{ lang.proficiency }}</span>
-            </div>
-          </div>
-          <div *ngIf="resumeData.softSkills.length > 0" class="c-section c-half">
-            <div class="c-section-title">SOFT SKILLS</div>
-            <div class="c-soft-tags">
-              <span *ngFor="let ss of resumeData.softSkills" class="c-soft-tag">{{ ss.name }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div *ngIf="isResumeEmpty" class="empty-preview">
-          <p>Fill in your details on the left to see your resume here.</p>
-        </div>
-      </div>
-
-
-      <!-- ══════ MODERN TEMPLATE ══════ -->
-      <div *ngIf="activeTemplate === 'modern'" class="resume-doc modern" id="resume-print" [ngStyle]="resumeStyles">
-
-        <div class="m-sidebar">
-          <div class="m-avatar">{{ (resumeData.personalInfo.fullName || 'Y')[0].toUpperCase() }}</div>
-          <h1 class="m-name">{{ resumeData.personalInfo.fullName || 'Your Name' }}</h1>
-          <p class="m-title">{{ resumeData.personalInfo.jobTitle }}</p>
-
-          <div class="m-block" *ngIf="resumeData.personalInfo.email || resumeData.personalInfo.phone || resumeData.personalInfo.location || resumeData.personalInfo.website">
-            <div class="m-block-title">CONTACT</div>
-            <div *ngIf="resumeData.personalInfo.email"    class="m-contact">✉ {{ resumeData.personalInfo.email }}</div>
-            <div *ngIf="resumeData.personalInfo.phone"    class="m-contact">📞 {{ resumeData.personalInfo.phone }}</div>
-            <div *ngIf="resumeData.personalInfo.location" class="m-contact">📍 {{ resumeData.personalInfo.location }}</div>
-            <div *ngIf="resumeData.personalInfo.website"  class="m-contact">🔗 {{ resumeData.personalInfo.website }}</div>
-          </div>
-
-          <div *ngIf="resumeData.skills.length > 0" class="m-block">
-            <div class="m-block-title">TECHNICAL SKILLS</div>
-            <div *ngFor="let cat of skillCategories" class="m-skill-group">
-              <div class="m-skill-cat">{{ cat }}</div>
-              <div *ngFor="let skill of getSkillsByCategory(cat)" class="m-skill">
-                <span class="m-skill-name">{{ skill.name }}</span>
-                <div class="m-skill-bar"><div class="m-skill-fill" [style.width]="(skill.level/5*100)+'%'"></div></div>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="resumeData.languages.length > 0" class="m-block">
-            <div class="m-block-title">LANGUAGES</div>
-            <div *ngFor="let lang of resumeData.languages" class="m-lang">
-              <span>{{ lang.name }}</span><span class="m-lang-level">{{ lang.proficiency }}</span>
-            </div>
-          </div>
-
-          <div *ngIf="resumeData.softSkills.length > 0" class="m-block">
-            <div class="m-block-title">SOFT SKILLS</div>
-            <div class="m-soft-list">
-              <span *ngFor="let ss of resumeData.softSkills" class="m-soft-tag">{{ ss.name }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="m-main">
-          <div *ngIf="resumeData.personalInfo.summary" class="m-section">
-            <div class="m-section-title">ABOUT ME</div>
-            <p class="m-body">{{ resumeData.personalInfo.summary }}</p>
-          </div>
-
-          <div *ngIf="resumeData.experiences.length > 0" class="m-section">
-            <div class="m-section-title">PROFESSIONAL EXPERIENCE</div>
-            <div *ngFor="let exp of resumeData.experiences" class="m-entry">
-              <div class="m-entry-dot"></div>
-              <div class="m-entry-body">
-                <div class="m-entry-top">
-                  <strong class="m-entry-title">{{ exp.position }}</strong>
-                  <span class="m-date">{{ formatDate(exp.startDate) }} – {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate) }}</span>
-                </div>
-                <em class="m-org">{{ exp.company }}</em>
-                <div *ngIf="exp.description" class="m-desc">
-                  <div *ngFor="let line of exp.description.split('\n')" class="m-bullet" [class.has-bullet]="line.trim().length > 0">{{ line }}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="resumeData.projects.length > 0" class="m-section">
-            <div class="m-section-title">PROJECT EXPERIENCE</div>
-            <div *ngFor="let proj of resumeData.projects" class="m-project">
-              <div class="m-proj-header">
-                <strong class="m-entry-title">{{ proj.name }}</strong>
-                <span *ngIf="proj.link" class="m-proj-link">{{ proj.link }}</span>
-              </div>
-              <p *ngIf="proj.technologies" class="m-tech">{{ proj.technologies }}</p>
-              <div *ngIf="proj.description" class="m-desc">
-                <div *ngFor="let line of proj.description.split('\n')" class="m-bullet" [class.has-bullet]="line.trim().length > 0">{{ line }}</div>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="resumeData.education.length > 0" class="m-section">
-            <div class="m-section-title">EDUCATION</div>
-            <div *ngFor="let edu of resumeData.education" class="m-entry">
-              <div class="m-entry-dot"></div>
-              <div class="m-entry-body">
-                <div class="m-entry-top">
-                  <strong class="m-entry-title">{{ edu.degree }}<ng-container *ngIf="edu.field"> ({{ edu.field }})</ng-container></strong>
-                  <span class="m-date">{{ formatYear(edu.startDate) }} – {{ formatYear(edu.endDate) }}</span>
-                </div>
-                <em class="m-org">{{ edu.institution }}<ng-container *ngIf="edu.grade"> · {{ edu.grade }}</ng-container></em>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="isResumeEmpty" class="empty-preview">
-            <p>Fill in your details to see the Modern template.</p>
-          </div>
-        </div>
-      </div>
-
+      <app-creative-template
+        *ngIf="activeTemplate === 'creative'"
+        [resumeData]="resumeData">
+      </app-creative-template>
     </div>
-  </div>
+
+  </div><!-- /preview-panel -->
+
 </div>

@@ -1,0 +1,142 @@
+<div class="resume-doc creative" id="resume-print" [ngStyle]="styles">
+
+  <!-- LEFT STRIPE + HEADER -->
+  <div class="cr-header">
+    <div class="cr-stripe"></div>
+    <div class="cr-header-content">
+      <div class="cr-photo-wrap" *ngIf="resumeData.personalInfo.photo">
+        <img [src]="resumeData.personalInfo.photo" class="cr-photo" alt="Profile" />
+      </div>
+      <div class="cr-avatar" *ngIf="!resumeData.personalInfo.photo">
+        {{ (resumeData.personalInfo.fullName || 'Y')[0].toUpperCase() }}
+      </div>
+      <div class="cr-name-block">
+        <h1 class="cr-name">{{ resumeData.personalInfo.fullName || 'Your Name' }}</h1>
+        <p class="cr-title">{{ resumeData.personalInfo.jobTitle }}</p>
+        <div class="cr-contacts">
+          <span *ngIf="resumeData.personalInfo.email">✉ {{ resumeData.personalInfo.email }}</span>
+          <span *ngIf="resumeData.personalInfo.phone">📞 {{ resumeData.personalInfo.phone }}</span>
+          <span *ngIf="resumeData.personalInfo.location">📍 {{ resumeData.personalInfo.location }}</span>
+          <span *ngIf="resumeData.personalInfo.website">🔗 {{ resumeData.personalInfo.website }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="cr-body">
+
+    <!-- LEFT COLUMN -->
+    <div class="cr-left">
+
+      <div *ngIf="resumeData.personalInfo.summary" class="cr-section">
+        <div class="cr-section-title">About Me</div>
+        <p class="cr-body-text">{{ resumeData.personalInfo.summary }}</p>
+      </div>
+
+      <div *ngIf="resumeData.skills.length > 0" class="cr-section">
+        <div class="cr-section-title">Skills</div>
+        <div *ngFor="let cat of skillCategories" class="cr-skill-group">
+          <div class="cr-skill-cat">{{ cat }}</div>
+          <div class="cr-skill-pills">
+            <span *ngFor="let skill of getSkillsByCategory(cat)" class="cr-skill-pill">{{ skill.name }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="resumeData.languages.length > 0" class="cr-section">
+        <div class="cr-section-title">Languages</div>
+        <div *ngFor="let lang of resumeData.languages" class="cr-lang-row">
+          <span class="cr-lang-name">{{ lang.name }}</span>
+          <div class="cr-lang-bar">
+            <div class="cr-lang-fill"
+              [style.width]="lang.proficiency === 'Native' ? '100%' :
+                             lang.proficiency === 'Professional' ? '80%' :
+                             lang.proficiency === 'Conversational' ? '60%' : '35%'">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="resumeData.softSkills.length > 0" class="cr-section">
+        <div class="cr-section-title">Soft Skills</div>
+        <div class="cr-soft-tags">
+          <span *ngFor="let ss of resumeData.softSkills" class="cr-soft-tag">{{ ss.name }}</span>
+        </div>
+      </div>
+
+    </div><!-- /cr-left -->
+
+    <!-- RIGHT COLUMN -->
+    <div class="cr-right">
+
+      <div *ngIf="resumeData.experiences.length > 0" class="cr-section">
+        <div class="cr-section-title">Experience</div>
+        <div *ngFor="let exp of resumeData.experiences" class="cr-entry">
+          <div class="cr-entry-marker">
+            <div class="cr-marker-dot"></div>
+            <div class="cr-marker-line"></div>
+          </div>
+          <div class="cr-entry-body">
+            <div class="cr-entry-top">
+              <div>
+                <div class="cr-entry-title">{{ exp.position }}</div>
+                <div class="cr-entry-org">{{ exp.company }}</div>
+              </div>
+              <div class="cr-entry-date">
+                {{ formatDate(exp.startDate) }} – {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate) }}
+              </div>
+            </div>
+            <div *ngIf="exp.description" class="cr-desc">
+              <div *ngFor="let line of exp.description.split('\n')"
+                class="cr-bullet" [class.has-bullet]="line.trim().length > 0">{{ line }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="resumeData.projects.length > 0" class="cr-section">
+        <div class="cr-section-title">Projects</div>
+        <div *ngFor="let proj of resumeData.projects" class="cr-project-card">
+          <div class="cr-proj-header">
+            <div class="cr-entry-title">{{ proj.name }}</div>
+            <span *ngIf="proj.link" class="cr-proj-link">{{ proj.link }}</span>
+          </div>
+          <p *ngIf="proj.technologies" class="cr-proj-tech">{{ proj.technologies }}</p>
+          <div *ngIf="proj.description" class="cr-desc">
+            <div *ngFor="let line of proj.description.split('\n')"
+              class="cr-bullet" [class.has-bullet]="line.trim().length > 0">{{ line }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="resumeData.education.length > 0" class="cr-section">
+        <div class="cr-section-title">Education</div>
+        <div *ngFor="let edu of resumeData.education" class="cr-entry">
+          <div class="cr-entry-marker">
+            <div class="cr-marker-dot"></div>
+            <div class="cr-marker-line"></div>
+          </div>
+          <div class="cr-entry-body">
+            <div class="cr-entry-top">
+              <div>
+                <div class="cr-entry-title">
+                  {{ edu.degree }}<ng-container *ngIf="edu.field"> · {{ edu.field }}</ng-container>
+                </div>
+                <div class="cr-entry-org">{{ edu.institution }}</div>
+              </div>
+              <div class="cr-entry-date">{{ formatYear(edu.startDate) }} – {{ formatYear(edu.endDate) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /cr-right -->
+
+  </div><!-- /cr-body -->
+
+  <div *ngIf="isEmpty" class="cr-empty">
+    <p>Fill in your details to see the Creative template.</p>
+  </div>
+
+</div>

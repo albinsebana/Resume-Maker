@@ -1,0 +1,33 @@
+<div class="section-form">
+  <div class="section-intro">
+    <span class="section-icon">⚡</span>
+    <div>
+      <strong>Technical Skills</strong>
+      <span>Grouped by category in the resume</span>
+    </div>
+  </div>
+
+  <div *ngFor="let skill of resumeData.skills" class="inline-row">
+    <select class="cat-select"
+      [(ngModel)]="skill.category" (ngModelChange)="emit()">
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+
+    <input *ngIf="skill.category === 'Other'"
+      type="text" class="inline-input inline-input-sm"
+      placeholder="Custom category..."
+      [(ngModel)]="skill.customCategory" (ngModelChange)="emit()" />
+
+    <input type="text" class="inline-input"
+      placeholder="Skill name (e.g. Angular, Python...)"
+      [(ngModel)]="skill.name" (ngModelChange)="emit()" />
+
+    <button class="remove-btn" (click)="remove(skill.id)">✕</button>
+  </div>
+
+  <div *ngIf="resumeData.skills.length === 0" class="empty-hint">
+    No skills added yet.
+  </div>
+
+  <button class="add-btn" (click)="add()">＋ Add Skill</button>
+</div>

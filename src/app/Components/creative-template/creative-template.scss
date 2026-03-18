@@ -1,0 +1,257 @@
+.resume-doc.creative {
+  max-width: 780px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.1);
+  font-family: var(--font-family, 'Helvetica Neue', sans-serif);
+  color: #1a1a2e;
+  overflow: hidden;
+}
+
+// ── Header with stripe ────────────────────────────────
+.cr-header {
+  display: flex;
+  background: #0f0f1a;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+
+  .cr-stripe {
+    width: 8px;
+    flex-shrink: 0;
+    background: var(--accent, #4f46e5);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .cr-header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 28px;
+    flex: 1;
+  }
+}
+
+// Photo or avatar in header
+.cr-photo-wrap { flex-shrink: 0; }
+
+.cr-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  border: 3px solid var(--accent, #4f46e5);
+  display: block;
+  -webkit-print-color-adjust: exact;
+}
+
+.cr-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--accent, #4f46e5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+  -webkit-print-color-adjust: exact;
+}
+
+.cr-name-block {
+  flex: 1;
+
+  .cr-name {
+    font-size: var(--heading-size, 28px);
+    font-weight: var(--heading-weight, 800);
+    color: white;
+    margin: 0 0 4px;
+    letter-spacing: -0.5px;
+  }
+
+  .cr-title {
+    font-size: 13px;
+    color: var(--accent, #4f46e5);
+    margin: 0 0 10px;
+    font-weight: 500;
+  }
+
+  .cr-contacts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+
+    span { font-size: 11px; color: #aaa; }
+  }
+}
+
+// ── Body two columns ──────────────────────────────────
+.cr-body {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+}
+
+// ── Left sidebar ──────────────────────────────────────
+.cr-left {
+  background: #f7f7fa;
+  padding: 28px 20px;
+  border-right: 1px solid #e8e8f0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+// ── Right main ────────────────────────────────────────
+.cr-right {
+  padding: 28px 28px;
+}
+
+// ── Section ───────────────────────────────────────────
+.cr-section {
+  margin-bottom: 22px;
+}
+
+.cr-section-title {
+  font-size: var(--section-title-sz, 12px);
+  font-weight: var(--section-title-wt, 800);
+  color: var(--accent, #4f46e5);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-left: 10px;
+  border-left: 3px solid var(--accent, #4f46e5);
+  -webkit-print-color-adjust: exact;
+}
+
+.cr-body-text {
+  font-size: var(--body-size, 13px);
+  color: #444;
+  line-height: 1.7;
+  margin: 0;
+}
+
+// ── Skills ────────────────────────────────────────────
+.cr-skill-group { margin-bottom: 10px;
+  .cr-skill-cat { font-size: 10px; font-weight: 700; color: #333; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .cr-skill-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+  .cr-skill-pill {
+    font-size: 10.5px; color: var(--accent, #4f46e5);
+    background: white; padding: 3px 9px; border-radius: 100px;
+    border: 1px solid var(--accent, #4f46e5); font-weight: 500;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+// ── Language bars ─────────────────────────────────────
+.cr-lang-row {
+  margin-bottom: 8px;
+  .cr-lang-name { font-size: 11.5px; font-weight: 600; color: #333; display: block; margin-bottom: 4px; }
+  .cr-lang-bar { height: 4px; background: #e0e0e8; border-radius: 2px; overflow: hidden; -webkit-print-color-adjust: exact;
+    .cr-lang-fill { height: 100%; background: var(--accent, #4f46e5); border-radius: 2px; -webkit-print-color-adjust: exact; }
+  }
+}
+
+// ── Soft skills ───────────────────────────────────────
+.cr-soft-tags { display: flex; flex-wrap: wrap; gap: 5px;
+  .cr-soft-tag { font-size: 10.5px; color: #555; background: white; padding: 3px 9px; border-radius: 6px; border: 1px solid #ddd; }
+}
+
+// ── Timeline entries ──────────────────────────────────
+.cr-entry {
+  display: flex;
+  gap: 0;
+  margin-bottom: 16px;
+
+  .cr-entry-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+
+    .cr-marker-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent, #4f46e5);
+      flex-shrink: 0;
+      margin-top: 4px;
+      -webkit-print-color-adjust: exact;
+    }
+
+    .cr-marker-line {
+      width: 2px;
+      flex: 1;
+      background: #e0e0e8;
+      margin-top: 4px;
+      min-height: 20px;
+      -webkit-print-color-adjust: exact;
+    }
+  }
+
+  .cr-entry-body { flex: 1; }
+
+  .cr-entry-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+
+  .cr-entry-title { font-size: calc(var(--body-size, 13px) + 1px); font-weight: 700; color: #0f0f1a; margin-bottom: 2px; }
+  .cr-entry-org   { font-size: var(--body-size, 13px); color: var(--accent, #4f46e5); font-style: italic; }
+  .cr-entry-date  { font-size: 10.5px; color: #999; white-space: nowrap; flex-shrink: 0; text-align: right; }
+}
+
+// ── Project cards ─────────────────────────────────────
+.cr-project-card {
+  background: #f7f7fa;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent, #4f46e5);
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  -webkit-print-color-adjust: exact;
+
+  .cr-proj-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px; }
+  .cr-proj-link   { font-size: 10.5px; color: var(--accent, #4f46e5); word-break: break-all; }
+  .cr-proj-tech   { font-size: 11px; color: #888; font-style: italic; margin: 0 0 5px; }
+}
+
+// ── Desc bullets ──────────────────────────────────────
+.cr-desc { }
+
+.cr-bullet {
+  font-size: var(--body-size, 13px);
+  color: #444;
+  line-height: 1.65;
+  padding-left: 14px;
+  position: relative;
+  margin-bottom: 2px;
+  min-height: 4px;
+
+  &.has-bullet::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--accent, #4f46e5);
+  }
+}
+
+.cr-empty {
+  display: flex; align-items: center; justify-content: center;
+  padding: 80px 24px; color: #d1d5db; text-align: center;
+  p { font-size: 13.5px; margin: 0; }
+}
+
+@media print {
+  .resume-doc.creative {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+}
