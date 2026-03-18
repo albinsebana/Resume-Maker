@@ -1,0 +1,55 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Settings</h1>
+    <p>Customize your resume builder experience</p>
+  </div>
+
+  <div class="settings-card">
+    <div class="settings-group-title">Preferences</div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="s-label">Default Template</span>
+        <span class="s-desc">Starting layout for new resumes</span>
+      </div>
+      <select class="s-select" [(ngModel)]="defaultTemplate">
+        <option value="classic">Classic</option>
+        <option value="modern">Modern</option>
+        <option value="minimal">Minimal</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="s-label">Font Style</span>
+        <span class="s-desc">Typography preference for resume</span>
+      </div>
+      <select class="s-select" [(ngModel)]="fontStyle">
+        <option value="serif">Serif (Georgia)</option>
+        <option value="sans">Sans-Serif (Helvetica)</option>
+      </select>
+    </div>
+
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="s-label">Auto Save</span>
+        <span class="s-desc">Automatically save progress to browser</span>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" [(ngModel)]="autoSave" />
+        <span class="track"><span class="thumb"></span></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="settings-card danger-card">
+    <div class="settings-group-title danger-title">Danger Zone</div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <span class="s-label">Clear All Data</span>
+        <span class="s-desc">Permanently delete your saved resume data</span>
+      </div>
+      <button class="danger-btn" (click)="clearData()">Clear Data</button>
+    </div>
+  </div>
+</div>

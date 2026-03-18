@@ -1,0 +1,93 @@
+<div class="home-page">
+  <div class="hero-section">
+    <div class="hero-badge">✦ Resume Maker</div>
+    <h1 class="hero-title">
+      Build Your <span class="highlight">Perfect</span><br />Resume
+    </h1>
+    <p class="hero-subtitle">
+      Craft a stunning, professional resume in minutes.<br />
+      Choose how you'd like to get started.
+    </p>
+  </div>
+
+  <div class="options-grid">
+
+    <!-- Upload Option -->
+    <div class="option-card upload-card">
+      <div class="card-glow"></div>
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <div class="card-content">
+        <h2>Upload Resume</h2>
+        <p>Already have a resume? Upload your existing PDF or DOCX file to edit and enhance it.</p>
+        <ul class="feature-list">
+          <li>✓ Supports PDF &amp; DOCX</li>
+          <li>✓ Auto-parse data</li>
+          <li>✓ Edit &amp; improve</li>
+        </ul>
+      </div>
+      <label class="card-btn upload-btn">
+        <input type="file" accept=".pdf,.docx" (change)="handleUpload($event)" hidden />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Upload File
+      </label>
+    </div>
+
+    <!-- Create Option -->
+    <div class="option-card create-card" (click)="goToBuilder()">
+      <div class="card-glow create-glow"></div>
+      <div class="card-icon create-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="12" y1="18" x2="12" y2="12"/>
+          <line x1="9" y1="15" x2="15" y2="15"/>
+        </svg>
+      </div>
+      <div class="card-content">
+        <h2>Create With Data</h2>
+        <p>Start fresh and build your resume step by step with our smart interactive builder.</p>
+        <ul class="feature-list">
+          <li>✓ Step-by-step guide</li>
+          <li>✓ Live preview</li>
+          <li>✓ Print-ready output</li>
+        </ul>
+      </div>
+      <button class="card-btn create-btn" (click)="goToBuilder()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        Start Building
+      </button>
+    </div>
+
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <span class="stat-number">10K+</span>
+      <span class="stat-label">Resumes Created</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-number">98%</span>
+      <span class="stat-label">Success Rate</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-number">5 min</span>
+      <span class="stat-label">Avg. Build Time</span>
+    </div>
+  </div>
+</div>
