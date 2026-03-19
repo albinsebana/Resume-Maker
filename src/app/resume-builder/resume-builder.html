@@ -1,137 +1,142 @@
-<div class="builder-wrapper">
+<div class="builder-root">
 
-  <!-- ═══════ LEFT PANEL ═══════ -->
+  <!-- ══ FORM PANEL ══ -->
   <div class="form-panel">
 
-    <!-- Header with hamburger + title + actions -->
+    <!-- Header -->
     <div class="form-header">
-      <div class="header-row">
+      <!-- Hamburger — mobile only -->
+      <button class="hamburger" (click)="openNav()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20">
+          <line x1="3" y1="6"  x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
 
-        <!-- Hamburger — opens sidenav (mobile/tablet only) -->
-        <button class="hamburger" (click)="openNav()" aria-label="Menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20">
-            <line x1="3" y1="6"  x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
+      <div class="header-info">
+        <h2>Resume Builder</h2>
+        <span class="autosave"
+          [class.saving]="saveStatus==='saving'"
+          [class.saved]="saveStatus==='saved'">
+          <ng-container *ngIf="saveStatus==='saving'">⟳ Saving…</ng-container>
+          <ng-container *ngIf="saveStatus==='saved'">✓ Saved</ng-container>
+        </span>
+      </div>
+
+      <div class="header-btns">
+        <!-- Preview btn — hidden on desktop -->
+        <button class="btn-preview" (click)="openPreview()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
           </svg>
+          Preview
         </button>
-
-        <!-- Title -->
-        <div class="header-title">
-          <h2>Resume Builder</h2>
-          <p class="header-sub">Live preview updates as you type</p>
-        </div>
-
-        <!-- Actions -->
-        <div class="header-actions">
-          <span class="save-badge"
-            [class.saving]="saveStatus === 'saving'"
-            [class.saved]="saveStatus === 'saved'">
-            <span *ngIf="saveStatus === 'saving'">⟳</span>
-            <span *ngIf="saveStatus === 'saved'">✓ Saved</span>
-          </span>
-
-          <!-- Preview button — mobile/tablet only -->
-          <button class="btn-preview" (click)="openPreview()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            Preview
-          </button>
-
-          <button class="btn-reset" (click)="clearAll()">🗑</button>
-        </div>
+        <button class="btn-reset" (click)="clearAll()">🗑</button>
       </div>
     </div>
 
-    <!-- Section Tabs -->
+    <!-- Section tabs -->
     <div class="section-tabs">
-      <button *ngFor="let s of sections" class="tab-btn"
-        [class.active]="activeSection === s.id"
+      <button *ngFor="let s of sections" class="tab"
+        [class.active]="activeSection===s.id"
         (click)="setSection(s.id)">
         {{ s.label }}
       </button>
     </div>
 
-    <!-- Form sections -->
+    <!-- Form content -->
     <div class="form-body">
-      <app-personal-form   *ngIf="activeSection === 'personal'"   [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-personal-form>
-      <app-experience-form *ngIf="activeSection === 'experience'" [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-experience-form>
-      <app-education-form  *ngIf="activeSection === 'education'"  [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-education-form>
-      <app-skills-form     *ngIf="activeSection === 'skills'"     [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-skills-form>
-      <app-projects-form   *ngIf="activeSection === 'projects'"   [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-projects-form>
-      <app-languages-form  *ngIf="activeSection === 'languages'"  [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-languages-form>
-      <app-softskills-form *ngIf="activeSection === 'softskills'" [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-softskills-form>
-      <app-style-config    *ngIf="activeSection === 'style'"      [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-style-config>
-    </div>
-
-  </div><!-- /form-panel -->
-
-
-  <!-- ═══════ RIGHT PANEL — Desktop only ═══════ -->
-  <div class="preview-panel desktop-only">
-    <div class="preview-toolbar">
-      <div class="toolbar-left">
-        <span class="preview-label">Live Preview</span>
-        <div class="tpl-switcher">
-          <button *ngFor="let t of templates" class="tpl-btn"
-            [class.active]="activeTemplate === t.id"
-            (click)="setTemplate(t.id)">
-            {{ t.label }}
-          </button>
-        </div>
-      </div>
-      <app-download-toolbar [resumeName]="resumeData.personalInfo.fullName || 'resume'"></app-download-toolbar>
-    </div>
-    <div class="resume-scroll">
-      <app-classic-template   *ngIf="activeTemplate === 'classic'"   [resumeData]="resumeData"></app-classic-template>
-      <app-modern-template    *ngIf="activeTemplate === 'modern'"    [resumeData]="resumeData"></app-modern-template>
-      <app-minimal-template   *ngIf="activeTemplate === 'minimal'"   [resumeData]="resumeData"></app-minimal-template>
-      <app-executive-template *ngIf="activeTemplate === 'executive'" [resumeData]="resumeData"></app-executive-template>
-      <app-creative-template  *ngIf="activeTemplate === 'creative'"  [resumeData]="resumeData"></app-creative-template>
+      <app-personal-form   *ngIf="activeSection==='personal'"   [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-personal-form>
+      <app-experience-form *ngIf="activeSection==='experience'" [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-experience-form>
+      <app-education-form  *ngIf="activeSection==='education'"  [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-education-form>
+      <app-skills-form     *ngIf="activeSection==='skills'"     [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-skills-form>
+      <app-projects-form   *ngIf="activeSection==='projects'"   [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-projects-form>
+      <app-languages-form  *ngIf="activeSection==='languages'"  [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-languages-form>
+      <app-softskills-form *ngIf="activeSection==='softskills'" [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-softskills-form>
+      <app-style-config    *ngIf="activeSection==='style'"      [resumeData]="resumeData" (dataChange)="onDataChange($event)"></app-style-config>
     </div>
   </div>
 
-</div><!-- /builder-wrapper -->
-
-
-<!-- ═══════ MOBILE PREVIEW DRAWER — slides from RIGHT ═══════ -->
-<div class="preview-backdrop" [class.open]="previewOpen" (click)="closePreview()"></div>
-
-<div class="preview-drawer" [class.open]="previewOpen">
-
-  <div class="drawer-header">
-    <span class="drawer-title">Resume Preview</span>
-    <div class="drawer-actions">
-      <div class="tpl-switcher-sm">
-        <button *ngFor="let t of templates" class="tpl-btn-sm"
-          [class.active]="activeTemplate === t.id"
+  <!-- ══ PREVIEW PANEL — desktop only ══ -->
+  <div class="preview-panel">
+    <div class="preview-bar">
+      <div class="tpl-switcher">
+        <button *ngFor="let t of templates" class="tpl-btn"
+          [class.active]="activeTemplate===t.id"
           (click)="setTemplate(t.id)">
           {{ t.label }}
         </button>
       </div>
-      <button class="drawer-close" (click)="closePreview()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
+      <app-download-toolbar [resumeName]="resumeData.personalInfo.fullName||'resume'"></app-download-toolbar>
+    </div>
+    <div class="resume-scroll">
+      <app-classic-template   *ngIf="activeTemplate==='classic'"   [resumeData]="resumeData"></app-classic-template>
+      <app-modern-template    *ngIf="activeTemplate==='modern'"    [resumeData]="resumeData"></app-modern-template>
+      <app-minimal-template   *ngIf="activeTemplate==='minimal'"   [resumeData]="resumeData"></app-minimal-template>
+      <app-executive-template *ngIf="activeTemplate==='executive'" [resumeData]="resumeData"></app-executive-template>
+      <app-creative-template  *ngIf="activeTemplate==='creative'"  [resumeData]="resumeData"></app-creative-template>
     </div>
   </div>
 
-  <div class="drawer-toolbar">
-    <app-download-toolbar [resumeName]="resumeData.personalInfo.fullName || 'resume'"></app-download-toolbar>
+</div>
+
+<!-- ══ MOBILE PREVIEW DRAWER — slides from RIGHT ══ -->
+<div class="drawer-backdrop" [class.open]="previewOpen" (click)="closePreview()"></div>
+
+<div class="preview-drawer" [class.open]="previewOpen">
+
+  <!-- Drawer header with back button -->
+  <div class="drawer-head">
+    <button class="drawer-back-btn" (click)="closePreview()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Back to Edit
+    </button>
+    <span class="drawer-title">Preview</span>
+    <button class="drawer-close" (click)="closePreview()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
   </div>
 
-  <div class="drawer-body">
-    <div class="resume-scale-wrap">
-      <app-classic-template   *ngIf="activeTemplate === 'classic'"   [resumeData]="resumeData"></app-classic-template>
-      <app-modern-template    *ngIf="activeTemplate === 'modern'"    [resumeData]="resumeData"></app-modern-template>
-      <app-minimal-template   *ngIf="activeTemplate === 'minimal'"   [resumeData]="resumeData"></app-minimal-template>
-      <app-executive-template *ngIf="activeTemplate === 'executive'" [resumeData]="resumeData"></app-executive-template>
-      <app-creative-template  *ngIf="activeTemplate === 'creative'"  [resumeData]="resumeData"></app-creative-template>
+  <!-- Template switcher -->
+  <div class="drawer-tpl-row">
+    <button *ngFor="let t of templates" class="tpl-btn-sm"
+      [class.active]="activeTemplate===t.id"
+      (click)="setTemplate(t.id)">
+      {{ t.label }}
+    </button>
+  </div>
+
+  <!-- Download toolbar -->
+  <div class="drawer-bar">
+    <app-download-toolbar [resumeName]="resumeData.personalInfo.fullName||'resume'"></app-download-toolbar>
+  </div>
+
+  <!-- Resume preview -->
+  <div class="drawer-scroll">
+    <div class="resume-scale">
+      <app-classic-template   *ngIf="activeTemplate==='classic'"   [resumeData]="resumeData"></app-classic-template>
+      <app-modern-template    *ngIf="activeTemplate==='modern'"    [resumeData]="resumeData"></app-modern-template>
+      <app-minimal-template   *ngIf="activeTemplate==='minimal'"   [resumeData]="resumeData"></app-minimal-template>
+      <app-executive-template *ngIf="activeTemplate==='executive'" [resumeData]="resumeData"></app-executive-template>
+      <app-creative-template  *ngIf="activeTemplate==='creative'"  [resumeData]="resumeData"></app-creative-template>
     </div>
   </div>
 
-</div><!-- /preview-drawer -->
+  <!-- Sticky bottom back button — always visible while scrolling -->
+  <div class="drawer-footer">
+    <button class="drawer-footer-back" (click)="closePreview()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      ← Back to Edit
+    </button>
+  </div>
+
+</div>
