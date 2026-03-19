@@ -13,18 +13,21 @@ import { ResumeData } from '../../resume.model';
 export class CreativeTemplateComponent {
   @Input() resumeData!: ResumeData;
 
-  get styles(): Record<string, string> {
-    const s = this.resumeData.styleConfig;
-    return {
-      '--accent':           s.accentColor,
-      '--heading-size':     s.headingFontSize    + 'px',
-      '--section-title-sz': s.sectionTitleSize   + 'px',
-      '--body-size':        s.bodyFontSize        + 'px',
-      '--heading-weight':   s.headingFontWeight,
-      '--section-title-wt': s.sectionTitleWeight,
-      '--font-family':      s.fontFamily,
-    };
-  }
+get styles(): Record<string, string> {
+  const s = this.resumeData.styleConfig;
+  return {
+    '--accent':           s.accentColor,
+    '--heading-size':     s.headingFontSize    + 'px',
+    '--section-title-sz': s.sectionTitleSize   + 'px',
+    '--body-size':        s.bodyFontSize        + 'px',
+    '--heading-weight':   s.headingFontWeight,
+    '--section-title-wt': s.sectionTitleWeight,
+    '--font-family':      s.fontFamily,
+    '--page-padding':     (s.pagePadding    ?? 14) + 'mm',   // ← ADD
+    '--section-spacing':  (s.sectionSpacing ?? 18) + 'px',   // ← ADD
+    '--line-height':      (s.lineHeight     ?? 1.7).toString(), // ← ADD
+  };
+}
 
   get skillCategories(): string[] {
     return [...new Set(this.resumeData.skills.map(s =>

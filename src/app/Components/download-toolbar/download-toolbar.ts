@@ -4,7 +4,7 @@ import { PrintDownloadService } from '../print-download';
 
 @Component({
   selector: 'app-download-toolbar',
-  standalone: true,          // ← standalone: true fixes NG2012
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './download-toolbar.html',
   styleUrl: './download-toolbar.scss'
@@ -32,7 +32,10 @@ export class DownloadToolbarComponent {
 
   onPrint() {
     this.showDropdown = false;
-    this.printDownload.print();
+    this.setLoading('Preparing print…');
+    this.printDownload.print().then(() => {
+      this.clearLoading();
+    }).catch(() => this.clearLoading());
   }
 
   onDownload(format: 'pdf' | 'html' | 'doc' | 'image') {
@@ -41,20 +44,27 @@ export class DownloadToolbarComponent {
 
     switch (format) {
       case 'pdf':
-        this.setLoading('Opening PDF…');
-        this.printDownload.downloadPdf();
-        setTimeout(() => this.clearLoading(), 2000);
+        // Now async — shows loading until PDF is generated and saved
+        this.setLoading('Generating PDF…');
+        this.printDownload.downloadPdf(name).then(() => {
+          this.clearLoading();
+        }).catch(() => {
+          this.clearLoading();
+        });
         break;
+
       case 'html':
         this.setLoading('Downloading HTML…');
         this.printDownload.downloadHtml(name);
         setTimeout(() => this.clearLoading(), 1000);
         break;
+
       case 'doc':
         this.setLoading('Downloading DOC…');
         this.printDownload.downloadDoc(name);
         setTimeout(() => this.clearLoading(), 1000);
         break;
+
       case 'image':
         this.setLoading('Generating image…');
         this.printDownload.downloadImage(name).then(() => {

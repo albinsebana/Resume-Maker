@@ -1,12 +1,20 @@
 export interface PersonalInfo {
-  fullName: string;
-  jobTitle: string;
-  email: string;
-  phone: string;
-  location: string;
-  website: string;
-  summary: string;
-  photo?: string;
+  fullName:  string;
+  jobTitle:  string;
+  email:     string;
+  phone:     string;
+  location:  string;
+  website:   string;
+  linkedin:  string;
+  portfolio: string;
+  linkedinMask:   boolean;
+  linkedinLabel:  string;
+  portfolioMask:  boolean;
+  portfolioLabel: string;
+  websiteMask:    boolean;
+  websiteLabel:   string;
+  summary:   string;
+  photo?:    string;
 }
 
 export interface Experience {
@@ -34,7 +42,7 @@ export interface Skill {
   name: string;
   level: number;
   category: string;
-  customCategory?: string;  // used when category === 'Other'
+  customCategory?: string;
 }
 
 export interface Project {
@@ -45,34 +53,119 @@ export interface Project {
   link: string;
 }
 
-export interface Language {  // ← NEW
+export interface Language {
   id: string;
   name: string;
   proficiency: string;
 }
 
-export interface SoftSkill {  // ← NEW
+export interface SoftSkill {
   id: string;
   name: string;
 }
 
-export interface StyleConfig {  // ← NEW
-  accentColor: string;
-  headingFontSize: number;
-  sectionTitleSize: number;
-  bodyFontSize: number;
-  headingFontWeight: string;
-  sectionTitleWeight: string;
-  fontFamily: string;
+// ── Per-section style configs ──────────────────────────────────────
+export interface PersonalStyle {
+  nameFontSize:      number;
+  nameFontWeight:    string;
+  jobTitleFontSize:  number;
+  jobTitleColor:     string;
+  contactFontSize:   number;
+  summaryFontSize:   number;
+  summaryLineHeight: number;
+  summaryTopGap:     number;  // gap above SUMMARY section (px)
+  summaryPadding:    number;  // padding above/below summary text (px)
+}
+
+export interface ExperienceStyle {
+  titleFontSize:    number;
+  titleFontWeight:  string;
+  companyFontSize:  number;
+  companyColor:     string;
+  dateFontSize:     number;
+  bulletChar:       string;
+  bulletFontSize:   number;
+  bulletLineHeight: number;
+  entrySpacing:     number;
+}
+
+export interface EducationStyle {
+  titleFontSize:       number;
+  titleFontWeight:     string;
+  institutionFontSize: number;
+  institutionColor:    string;
+  dateFontSize:        number;
+  entrySpacing:        number;
+}
+
+export interface SkillStyle {
+  categoryFontSize:   number;
+  categoryFontWeight: string;
+  skillFontSize:      number;
+  showSkillBars:      boolean;
+  tagBordered:        boolean;
+  rowGap:             number;
+  headerSkillGap:     number;
+  tagPaddingH:        number;
+}
+
+export interface ProjectStyle {
+  titleFontSize:    number;
+  titleFontWeight:  string;
+  techFontSize:     number;
+  bulletChar:       string;
+  bulletFontSize:   number;
+  bulletLineHeight: number;
+  cardBackground:   boolean;
+}
+
+export interface LanguageStyle {
+  tagBordered: boolean;
+  fontSize:    number;
+  tagPaddingH: number;  // horizontal padding inside tag (px)
+  tagPaddingV: number;  // vertical padding inside tag (px)
+  tagGap:      number;  // gap between tags (px)
+}
+
+export interface SoftSkillStyle {
+  tagBordered: boolean;
+  fontSize:    number;
+  tagPaddingH: number;
+  tagPaddingV: number;
+  tagGap:      number;
+}
+
+// ── Global style config ────────────────────────────────────────────
+export interface StyleConfig {
+  accentColor:          string;
+  fontFamily:           string;
+  pagePadding:          number;
+  pageTopPadding:       number;  // ← top padding only (mm)
+  sectionSpacing:       number;
+  sectionTitleSize:     number;
+  sectionTitleWeight:   string;
+  headingFontSize:      number;
+  bodyFontSize:         number;
+  headingFontWeight:    string;
+  lineHeight:           number;
+  langTagBordered:      boolean;
+  softSkillTagBordered: boolean;
+  personal:   PersonalStyle;
+  experience: ExperienceStyle;
+  education:  EducationStyle;
+  skills:     SkillStyle;
+  projects:   ProjectStyle;
+  languages:  LanguageStyle;
+  softSkills: SoftSkillStyle;
 }
 
 export interface ResumeData {
   personalInfo: PersonalInfo;
-  experiences: Experience[];
-  education: Education[];
-  skills: Skill[];
-  projects: Project[];
-  languages: Language[];      // ← NEW
-  softSkills: SoftSkill[];    // ← NEW
-  styleConfig: StyleConfig;   // ← NEW
+  experiences:  Experience[];
+  education:    Education[];
+  skills:       Skill[];
+  projects:     Project[];
+  languages:    Language[];
+  softSkills:   SoftSkill[];
+  styleConfig:  StyleConfig;
 }

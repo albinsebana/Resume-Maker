@@ -4,16 +4,23 @@
   background: white;
   border-radius: 10px;
   box-shadow: 0 4px 32px rgba(0,0,0,0.1);
-  padding: 40px 48px;
+  padding: var(--page-top-padding, 6mm)
+           calc(var(--page-padding, 14mm) * 1.2)
+           var(--page-padding, 14mm)
+           calc(var(--page-padding, 14mm) * 1.2);
   font-family: var(--font-family, 'Georgia', serif);
   color: #1a1a2e;
 }
 
+.c-section     { margin-bottom: var(--section-spacing, 18px) !important; }
+.c-body        { line-height:   var(--line-height,       1.7) !important; }
+.c-bullet      { line-height:   var(--line-height,       1.65) !important; }
+
 // ── Header ───────────────────────────────────────────
 .c-header {
   border-bottom: 2.5px solid var(--accent, #4f46e5);
-  padding-bottom: 18px;
-  margin-bottom: 20px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
 
   .c-name {
     font-size: var(--heading-size, 28px);
@@ -33,10 +40,41 @@
   .c-contacts {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px 16px;
-
-    span { font-size: 11.5px; color: #6b7280; }
+    gap: 4px 14px;
+    align-items: center;
   }
+}
+
+// ── Contact links ─────────────────────────────────────
+.c-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 11.5px;
+  transition: color 0.15s;
+
+  &:hover {
+    color: var(--accent, #4f46e5);
+    .c-contact-icon { stroke: var(--accent, #4f46e5); }
+  }
+
+  &.no-link { cursor: default; &:hover { color: #6b7280; } }
+}
+
+.c-contact-icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  stroke: #9ca3af;
+  transition: stroke 0.15s;
+}
+
+// LinkedIn brand color
+.linkedin-blue {
+  fill: #0077b5 !important;
+  stroke: none !important;
 }
 
 // ── Section ───────────────────────────────────────────
@@ -97,20 +135,36 @@
 .c-desc { margin-top: 4px; }
 
 .c-bullet {
-  font-size: var(--body-size, 13px);
+  // font-size and line-height set via [style] binding in template
   color: #4b5563;
-  line-height: 1.65;
-  padding-left: 13px;
+  padding-left: 16px;
   position: relative;
   margin-bottom: 2px;
   min-height: 4px;
 
+  // Bullet char comes from CSS var (set by template .ts via --bullet-char)
   &.has-bullet::before {
-    content: '•';
+    content: var(--bullet-char, '•');
     position: absolute;
     left: 0;
     color: var(--accent, #4f46e5);
+    font-size: 0.9em;
   }
+}
+
+// Project bullet uses separate var
+.c-project-entry .c-bullet.has-bullet::before {
+  content: var(--proj-bullet-char, '•');
+}
+
+// Project card background (when cardBackground=true)
+.c-card {
+  background: #f9f9ff;
+  border-left: 3px solid var(--accent, #4f46e5);
+  padding: 8px 12px;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 8px;
+  -webkit-print-color-adjust: exact;
 }
 
 // ── Skills ────────────────────────────────────────────
@@ -134,13 +188,21 @@
     gap: 4px;
   }
 
+  // DEFAULT — plain text, no border, no background
   .c-skill-tag {
     font-size: 11.5px;
     color: #4b5563;
-    background: #f3f2ff;
+    background: transparent;
     padding: 2px 8px;
     border-radius: 4px;
-    border: 1px solid #ece8ff;
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+  }
+
+  // BORDERED — when toggle ON
+  .c-skill-tag.c-tag-bordered {
+    font-weight: 600;
+    // border-color, color, background injected via [style] binding
   }
 }
 
@@ -166,14 +228,22 @@
   flex-wrap: wrap;
   gap: 5px;
 
+  // DEFAULT — plain text, no border, no background
   .c-soft-tag {
     font-size: 11.5px;
-    color: var(--accent, #4f46e5);
-    background: #f3f2ff;
+    color: #4b5563;
+    background: transparent;
     padding: 3px 10px;
     border-radius: 100px;
-    border: 1px solid #ece8ff;
+    border: 1.5px solid transparent;
     font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  // BORDERED — when toggle ON (color/border/bg set via [style] binding in template)
+  .c-soft-tag.c-tag-bordered {
+    font-weight: 600;
+    // actual colors injected by [style.border-color], [style.color], [style.background]
   }
 }
 

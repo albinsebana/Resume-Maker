@@ -85,29 +85,113 @@ export class ResumeBuilder implements OnInit, OnDestroy {
     document.body.style.overflow = '';
   }
 
-  private defaultStyleConfig: StyleConfig = {
-    accentColor: '#4f46e5', headingFontSize: 28, sectionTitleSize: 12,
-    bodyFontSize: 13, headingFontWeight: '700', sectionTitleWeight: '700',
-    fontFamily: "'Georgia', serif",
-  };
+// Replace defaultStyleConfig in resume-builder.ts with this:
 
-  load(): ResumeData {
-    try {
-      const stored = localStorage.getItem('resume_maker_data');
-      if (!stored) return this.getDefault();
-      const parsed = JSON.parse(stored) as ResumeData;
-      if (!parsed.languages)   parsed.languages  = [];
-      if (!parsed.softSkills)  parsed.softSkills  = [];
-      if (!parsed.styleConfig) parsed.styleConfig = { ...this.defaultStyleConfig };
-      if (parsed.skills?.length && !(parsed.skills[0] as any).category)
-        parsed.skills = parsed.skills.map((s: any) => ({ ...s, category: s.category || 'Other' }));
-      return parsed;
-    } catch { return this.getDefault(); }
-  }
+private defaultStyleConfig: StyleConfig = {
+  accentColor:           '#4f46e5',
+  fontFamily:            "'Georgia', serif",
+  pagePadding:           14,
+  sectionSpacing:        18,
+  sectionTitleSize:      12,
+  sectionTitleWeight:    '700',
+  headingFontSize:       28,
+  bodyFontSize:          13,
+  headingFontWeight:     '700',
+  lineHeight:            1.7,
+  pageTopPadding:       6,
+  langTagBordered:       false,
+  softSkillTagBordered:  false,
+personal: {
+  nameFontSize:      28,
+  nameFontWeight:    '700',
+  jobTitleFontSize:  14,
+  jobTitleColor:     'accent',
+  contactFontSize:   11,
+  summaryFontSize:   13,
+  summaryLineHeight: 1.7,
+  summaryTopGap:     18,  
+  summaryPadding:    0,   
+},
+  experience: {
+    titleFontSize: 14, titleFontWeight: '700',
+    companyFontSize: 12, companyColor: 'accent',
+    dateFontSize: 11, bulletChar: '•',
+    bulletFontSize: 13, bulletLineHeight: 1.65, entrySpacing: 12,
+  },
+  education: {
+    titleFontSize: 14, titleFontWeight: '700',
+    institutionFontSize: 12, institutionColor: 'accent',
+    dateFontSize: 11, entrySpacing: 10,
+  },
+skills: {
+  categoryFontSize:   11,
+  categoryFontWeight: '700',
+  skillFontSize:      12,
+  showSkillBars:      true,
+  tagBordered:        false,
+  rowGap:             6,     
+  headerSkillGap:     8,       
+  tagPaddingH:        8,      
+},
+  projects: {
+    titleFontSize: 14, titleFontWeight: '700',
+    techFontSize: 11, bulletChar: '•',
+    bulletFontSize: 13, bulletLineHeight: 1.65, cardBackground: true,
+  },
+languages: {
+  tagBordered: false,
+  fontSize:    12,
+  tagPaddingH: 10,   // ← ADD
+  tagPaddingV: 3,    // ← ADD
+  tagGap:      5,    // ← ADD
+},
+softSkills: {
+  tagBordered: false,
+  fontSize:    12,
+  tagPaddingH: 10,   // ← ADD
+  tagPaddingV: 3,    // ← ADD
+  tagGap:      5,    // ← ADD
+},
+};
+
+// Also add these lines inside load() after existing null checks:
+// if (!parsed.styleConfig.personal)   parsed.styleConfig.personal   = this.defaultStyleConfig.personal;
+// if (!parsed.styleConfig.experience) parsed.styleConfig.experience = this.defaultStyleConfig.experience;
+// if (!parsed.styleConfig.education)  parsed.styleConfig.education  = this.defaultStyleConfig.education;
+// if (!parsed.styleConfig.skills)     parsed.styleConfig.skills     = this.defaultStyleConfig.skills;
+// if (!parsed.styleConfig.projects)   parsed.styleConfig.projects   = this.defaultStyleConfig.projects;
+// if (!parsed.styleConfig.languages)  parsed.styleConfig.languages  = this.defaultStyleConfig.languages;
+// if (!parsed.styleConfig.softSkills) parsed.styleConfig.softSkills = this.defaultStyleConfig.softSkills;
+
+// And wherever you have a hardcoded StyleConfig object (resume-service.ts etc)
+// just add all the same fields above.
+load(): ResumeData {
+  
+  try {
+    const stored = localStorage.getItem('resume_maker_data');
+    if (!stored) return this.getDefault();
+    const parsed = JSON.parse(stored) as ResumeData;
+    if (parsed.styleConfig.langTagBordered      == null) parsed.styleConfig.langTagBordered      = false;
+    if (parsed.styleConfig.softSkillTagBordered == null) parsed.styleConfig.softSkillTagBordered = false;
+
+    if (!parsed.languages)   parsed.languages  = [];
+    if (!parsed.softSkills)  parsed.softSkills  = [];
+    if (!parsed.styleConfig) parsed.styleConfig = { ...this.defaultStyleConfig };
+    // Patch missing spacing fields for existing saved data
+    if (parsed.styleConfig.pagePadding    == null) parsed.styleConfig.pagePadding    = 14;
+    if (parsed.styleConfig.sectionSpacing == null) parsed.styleConfig.sectionSpacing = 18;
+    if (parsed.styleConfig.lineHeight     == null) parsed.styleConfig.lineHeight     = 1.7;
+    return parsed;
+  } catch { return this.getDefault(); }
+}
 
   getDefault(): ResumeData {
     return {
-      personalInfo: { fullName: '', jobTitle: '', email: '', phone: '', location: '', website: '', summary: '' },
+      personalInfo: { fullName: '', jobTitle: '', email: '', phone: '',
+        location: '', website: '' , linkedin:'', portfolio:'', summary: '' ,
+        linkedinMask: false,  linkedinLabel: '',
+        portfolioMask: false, portfolioLabel: '',
+        websiteMask: false,   websiteLabel: '', },
       experiences: [], education: [], skills: [], projects: [],
       languages: [], softSkills: [], styleConfig: { ...this.defaultStyleConfig },
     };

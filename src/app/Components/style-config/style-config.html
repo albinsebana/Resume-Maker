@@ -3,82 +3,488 @@
     <span class="section-icon">🎨</span>
     <div>
       <strong>Style & Appearance</strong>
-      <span>Customize fonts, colors and sizes — updates instantly</span>
+      <span>Per-section style controls</span>
     </div>
   </div>
 
-  <!-- COLORS -->
-  <div class="style-group-title">Accent Color</div>
-  <div class="form-group">
-    <div class="color-row">
-      <input type="color"
-        class="color-picker"
-        [(ngModel)]="resumeData.styleConfig.accentColor"
-        (ngModelChange)="emit()" />
-      <input type="text"
-        class="color-text"
-        [(ngModel)]="resumeData.styleConfig.accentColor"
-        (ngModelChange)="emit()"
-        placeholder="#4f46e5" />
-    </div>
-    <div class="color-presets">
-      <span *ngFor="let c of colorPresets"
-        class="color-dot"
-        [style.background]="c"
-        [class.active]="resumeData.styleConfig.accentColor === c"
-        (click)="setColor(c)">
-      </span>
-    </div>
-  </div>
+  <!-- ══ GLOBAL ══ -->
+  <div class="acc" [class.open]="openSection==='global'">
+    <button class="acc-head" (click)="toggle('global')">
+      <span class="acc-icon">🌐</span>
+      <div class="acc-info"><span class="acc-title">Global</span><span class="acc-sub">Font, color, spacing</span></div>
+      <svg class="acc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body">
+      <div class="ctrl-label">Accent Color</div>
+      <div class="color-row">
+        <input type="color" class="color-picker" [(ngModel)]="resumeData.styleConfig.accentColor" (ngModelChange)="emit()" />
+        <input type="text" class="color-text" [(ngModel)]="resumeData.styleConfig.accentColor" (ngModelChange)="emit()" />
+      </div>
+      <div class="color-presets">
+        <span *ngFor="let c of colorPresets" class="color-dot" [style.background]="c"
+          [class.active]="resumeData.styleConfig.accentColor===c" (click)="setColor(c)"></span>
+      </div>
 
-  <!-- FONT FAMILY -->
-  <div class="style-group-title">Font Family</div>
-  <div class="form-group">
-    <select [(ngModel)]="resumeData.styleConfig.fontFamily" (ngModelChange)="emit()">
-      <option *ngFor="let f of fontFamilies" [value]="f.value">{{ f.label }}</option>
-    </select>
-  </div>
-
-  <!-- HEADING -->
-  <div class="style-group-title">Name / Heading</div>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Size: {{ resumeData.styleConfig.headingFontSize }}px</label>
-      <input type="range" min="20" max="48"
-        [(ngModel)]="resumeData.styleConfig.headingFontSize"
-        (ngModelChange)="emit()" />
-    </div>
-    <div class="form-group">
-      <label>Weight</label>
-      <select [(ngModel)]="resumeData.styleConfig.headingFontWeight" (ngModelChange)="emit()">
-        <option *ngFor="let w of fontWeights" [value]="w.value">{{ w.label }}</option>
+      <div class="ctrl-label mt">Font Family</div>
+      <select [(ngModel)]="resumeData.styleConfig.fontFamily" (ngModelChange)="emit()">
+        <option *ngFor="let f of fontFamilies" [value]="f.value">{{ f.label }}</option>
       </select>
+
+      <div class="two-col mt">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Side Padding: {{ resumeData.styleConfig.pagePadding }}mm</div>
+          <input type="range" min="4" max="30" [(ngModel)]="resumeData.styleConfig.pagePadding" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Top Padding: {{ resumeData.styleConfig.pageTopPadding }}mm</div>
+          <input type="range" min="0" max="30" [(ngModel)]="resumeData.styleConfig.pageTopPadding" (ngModelChange)="emit()" />
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <div class="ctrl-label">Section Gap: {{ resumeData.styleConfig.sectionSpacing }}px</div>
+        <input type="range" min="6" max="40" [(ngModel)]="resumeData.styleConfig.sectionSpacing" (ngModelChange)="emit()" />
+      </div>
+
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Section Title: {{ resumeData.styleConfig.sectionTitleSize }}px</div>
+          <input type="range" min="9" max="18" [(ngModel)]="resumeData.styleConfig.sectionTitleSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Title Weight</div>
+          <select [(ngModel)]="resumeData.styleConfig.sectionTitleWeight" (ngModelChange)="emit()">
+            <option *ngFor="let w of fontWeights" [value]="w.value">{{ w.label }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Line Height: {{ resumeData.styleConfig.lineHeight | number:'1.1-1' }}</div>
+          <input type="range" min="1.2" max="2.4" step="0.1"
+            [(ngModel)]="resumeData.styleConfig.lineHeight" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Body Font Size: {{ resumeData.styleConfig.bodyFontSize }}px</div>
+          <input type="range" min="10" max="16"
+            [(ngModel)]="resumeData.styleConfig.bodyFontSize" (ngModelChange)="emit()" />
+        </div>
+      </div>
+
+      <button class="reset-sm danger" (click)="resetAll()">↺ Reset All to Defaults</button>
     </div>
   </div>
 
-  <!-- SECTION TITLES -->
-  <div class="style-group-title">Section Titles</div>
-  <div class="form-row">
-    <div class="form-group">
-      <label>Size: {{ resumeData.styleConfig.sectionTitleSize }}px</label>
-      <input type="range" min="9" max="18"
-        [(ngModel)]="resumeData.styleConfig.sectionTitleSize"
-        (ngModelChange)="emit()" />
-    </div>
-    <div class="form-group">
-      <label>Weight</label>
-      <select [(ngModel)]="resumeData.styleConfig.sectionTitleWeight" (ngModelChange)="emit()">
-        <option *ngFor="let w of fontWeights" [value]="w.value">{{ w.label }}</option>
-      </select>
+  <!-- ══ PERSONAL ══ -->
+  <div class="acc" [class.open]="openSection==='personal'">
+    <button class="acc-head" (click)="toggle('personal')">
+      <span class="acc-icon">👤</span>
+      <div class="acc-info"><span class="acc-title">Personal</span><span class="acc-sub">Name, title, summary</span></div>
+      <svg class="acc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body">
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Name Size: {{ resumeData.styleConfig.personal.nameFontSize }}px</div>
+          <input type="range" min="18" max="52" [(ngModel)]="resumeData.styleConfig.personal.nameFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Name Weight</div>
+          <select [(ngModel)]="resumeData.styleConfig.personal.nameFontWeight" (ngModelChange)="emit()">
+            <option *ngFor="let w of fontWeights" [value]="w.value">{{ w.label }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Job Title Size: {{ resumeData.styleConfig.personal.jobTitleFontSize }}px</div>
+          <input type="range" min="10" max="22" [(ngModel)]="resumeData.styleConfig.personal.jobTitleFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Job Title Color</div>
+          <div class="chip-row">
+            <button class="chip" [class.active]="resumeData.styleConfig.personal.jobTitleColor==='accent'" (click)="resumeData.styleConfig.personal.jobTitleColor='accent';emit()">Accent</button>
+            <button class="chip" [class.active]="resumeData.styleConfig.personal.jobTitleColor==='#6b7280'" (click)="resumeData.styleConfig.personal.jobTitleColor='#6b7280';emit()">Gray</button>
+            <button class="chip" [class.active]="resumeData.styleConfig.personal.jobTitleColor==='#000000'" (click)="resumeData.styleConfig.personal.jobTitleColor='#000000';emit()">Black</button>
+          </div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Contact Size: {{ resumeData.styleConfig.personal.contactFontSize }}px</div>
+          <input type="range" min="9" max="14" [(ngModel)]="resumeData.styleConfig.personal.contactFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Summary Size: {{ resumeData.styleConfig.personal.summaryFontSize }}px</div>
+          <input type="range" min="10" max="16" [(ngModel)]="resumeData.styleConfig.personal.summaryFontSize" (ngModelChange)="emit()" />
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Summary Line Height: {{ resumeData.styleConfig.personal.summaryLineHeight | number:'1.1-1' }}</div>
+        <input type="range" min="0.8" max="2.2" step="0.1" [(ngModel)]="resumeData.styleConfig.personal.summaryLineHeight" (ngModelChange)="emit()" />
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Summary Top Gap: {{ resumeData.styleConfig.personal.summaryTopGap }}px</div>
+          <input type="range" min="0" max="40"
+            [ngModel]="resumeData.styleConfig.personal.summaryTopGap"
+            (ngModelChange)="resumeData.styleConfig.personal.summaryTopGap=$event; emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Summary Padding: {{ resumeData.styleConfig.personal.summaryPadding }}px</div>
+          <input type="range" min="0" max="24"
+            [ngModel]="resumeData.styleConfig.personal.summaryPadding"
+            (ngModelChange)="resumeData.styleConfig.personal.summaryPadding=$event; emit()" />
+        </div>
+      </div>
+      <button class="reset-sm" (click)="resetSection('personal')">↺ Reset</button>
     </div>
   </div>
 
-  <!-- BODY TEXT -->
-  <div class="style-group-title">Body Text</div>
-  <div class="form-group">
-    <label>Size: {{ resumeData.styleConfig.bodyFontSize }}px</label>
-    <input type="range" min="10" max="16"
-      [(ngModel)]="resumeData.styleConfig.bodyFontSize"
-      (ngModelChange)="emit()" />
+  <!-- ══ EXPERIENCE ══ -->
+  <div class="acc" [class.open]="openSection==='experience'">
+    <button class="acc-head" (click)="toggle('experience')">
+      <span class="acc-icon">💼</span>
+      <div class="acc-info"><span class="acc-title">Experience</span><span class="acc-sub">Title, bullets, spacing</span></div>
+      <svg class="acc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body">
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Title Size: {{ resumeData.styleConfig.experience.titleFontSize }}px</div>
+          <input type="range" min="10" max="20" [(ngModel)]="resumeData.styleConfig.experience.titleFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Title Weight</div>
+          <select [(ngModel)]="resumeData.styleConfig.experience.titleFontWeight" (ngModelChange)="emit()">
+            <option *ngFor="let w of fontWeights" [value]="w.value">{{ w.label }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Company Size: {{ resumeData.styleConfig.experience.companyFontSize }}px</div>
+          <input type="range" min="9" max="16" [(ngModel)]="resumeData.styleConfig.experience.companyFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Company Color</div>
+          <div class="chip-row">
+            <button class="chip" [class.active]="resumeData.styleConfig.experience.companyColor==='accent'" (click)="resumeData.styleConfig.experience.companyColor='accent';emit()">Accent</button>
+            <button class="chip" [class.active]="resumeData.styleConfig.experience.companyColor==='#6b7280'" (click)="resumeData.styleConfig.experience.companyColor='#6b7280';emit()">Gray</button>
+            <button class="chip" [class.active]="resumeData.styleConfig.experience.companyColor==='#000000'" (click)="resumeData.styleConfig.experience.companyColor='#000000';emit()">Black</button>
+          </div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Date Size: {{ resumeData.styleConfig.experience.dateFontSize }}px</div>
+          <input type="range" min="9" max="14" [(ngModel)]="resumeData.styleConfig.experience.dateFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Entry Gap: {{ resumeData.styleConfig.experience.entrySpacing }}px</div>
+          <input type="range" min="4" max="28" [(ngModel)]="resumeData.styleConfig.experience.entrySpacing" (ngModelChange)="emit()" />
+        </div>
+      </div>
+      <div class="ctrl-label mt">Bullet Style</div>
+      <div class="chip-row wrap">
+        <button *ngFor="let b of bulletOptions" class="chip"
+          [class.active]="resumeData.styleConfig.experience.bulletChar===b.value"
+          (click)="resumeData.styleConfig.experience.bulletChar=b.value;emit()">{{ b.label }}</button>
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Bullet Size: {{ resumeData.styleConfig.experience.bulletFontSize }}px</div>
+          <input type="range" min="10" max="16" [(ngModel)]="resumeData.styleConfig.experience.bulletFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Line Height: {{ resumeData.styleConfig.experience.bulletLineHeight | number:'1.1-1' }}</div>
+          <input type="range" min="1.2" max="2.2" step="0.1" [(ngModel)]="resumeData.styleConfig.experience.bulletLineHeight" (ngModelChange)="emit()" />
+        </div>
+      </div>
+      <button class="reset-sm" (click)="resetSection('experience')">↺ Reset</button>
+    </div>
   </div>
+
+  <!-- ══ EDUCATION ══ -->
+  <div class="acc" [class.open]="openSection==='education'">
+    <button class="acc-head" (click)="toggle('education')">
+      <span class="acc-icon">🎓</span>
+      <div class="acc-info"><span class="acc-title">Education</span><span class="acc-sub">Degree, institution</span></div>
+      <svg class="acc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body">
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Degree Size: {{ resumeData.styleConfig.education.titleFontSize }}px</div>
+          <input type="range" min="10" max="20" [(ngModel)]="resumeData.styleConfig.education.titleFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Degree Weight</div>
+          <select [(ngModel)]="resumeData.styleConfig.education.titleFontWeight" (ngModelChange)="emit()">
+            <option *ngFor="let w of fontWeights" [value]="w.value">{{ w.label }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Institution Size: {{ resumeData.styleConfig.education.institutionFontSize }}px</div>
+          <input type="range" min="9" max="16" [(ngModel)]="resumeData.styleConfig.education.institutionFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Institution Color</div>
+          <div class="chip-row">
+            <button class="chip" [class.active]="resumeData.styleConfig.education.institutionColor==='accent'" (click)="resumeData.styleConfig.education.institutionColor='accent';emit()">Accent</button>
+            <button class="chip" [class.active]="resumeData.styleConfig.education.institutionColor==='#6b7280'" (click)="resumeData.styleConfig.education.institutionColor='#6b7280';emit()">Gray</button>
+            <button class="chip" [class.active]="resumeData.styleConfig.education.institutionColor==='#000000'" (click)="resumeData.styleConfig.education.institutionColor='#000000';emit()">Black</button>
+          </div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Date Size: {{ resumeData.styleConfig.education.dateFontSize }}px</div>
+          <input type="range" min="9" max="14" [(ngModel)]="resumeData.styleConfig.education.dateFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Entry Gap: {{ resumeData.styleConfig.education.entrySpacing }}px</div>
+          <input type="range" min="4" max="24" [(ngModel)]="resumeData.styleConfig.education.entrySpacing" (ngModelChange)="emit()" />
+        </div>
+      </div>
+      <button class="reset-sm" (click)="resetSection('education')">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- ══ SKILLS ══ -->
+  <div class="acc" [class.open]="openSection==='skills'">
+    <button class="acc-head" (click)="toggle('skills')">
+      <span class="acc-icon">⚡</span>
+      <div class="acc-info"><span class="acc-title">Skills</span><span class="acc-sub">Category, tags, bars</span></div>
+      <svg class="acc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body">
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Category Size: {{ resumeData.styleConfig.skills.categoryFontSize }}px</div>
+          <input type="range" min="9" max="16" [(ngModel)]="resumeData.styleConfig.skills.categoryFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Category Weight</div>
+          <select [(ngModel)]="resumeData.styleConfig.skills.categoryFontWeight" (ngModelChange)="emit()">
+            <option *ngFor="let w of fontWeights" [value]="w.value">{{ w.label }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Skill Size: {{ resumeData.styleConfig.skills.skillFontSize }}px</div>
+          <input type="range" min="9" max="16" [(ngModel)]="resumeData.styleConfig.skills.skillFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Row Gap: {{ resumeData.styleConfig.skills.rowGap }}px</div>
+          <input type="range" min="2" max="20"
+            [ngModel]="resumeData.styleConfig.skills.rowGap"
+            (ngModelChange)="resumeData.styleConfig.skills.rowGap=$event; emit()" />
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Category → Skills Gap: {{ resumeData.styleConfig.skills.headerSkillGap }}px</div>
+          <input type="range" min="2" max="20"
+            [ngModel]="resumeData.styleConfig.skills.headerSkillGap"
+            (ngModelChange)="resumeData.styleConfig.skills.headerSkillGap=$event; emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Tag Padding H: {{ resumeData.styleConfig.skills.tagPaddingH }}px</div>
+          <input type="range" min="2" max="20"
+            [ngModel]="resumeData.styleConfig.skills.tagPaddingH"
+            (ngModelChange)="resumeData.styleConfig.skills.tagPaddingH=$event; emit()" />
+        </div>
+      </div>
+      <div class="toggle-row">
+        <span class="ctrl-label">Tag Style: Plain → Bordered</span>
+        <label class="tog">
+          <input type="checkbox" [(ngModel)]="resumeData.styleConfig.skills.tagBordered" (ngModelChange)="emit()" />
+          <span class="tog-thumb"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <span class="ctrl-label">Show Skill Bars (Modern template)</span>
+        <label class="tog">
+          <input type="checkbox" [(ngModel)]="resumeData.styleConfig.skills.showSkillBars" (ngModelChange)="emit()" />
+          <span class="tog-thumb"></span>
+        </label>
+      </div>
+      <button class="reset-sm" (click)="resetSection('skills')">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- ══ PROJECTS ══ -->
+  <div class="acc" [class.open]="openSection==='projects'">
+    <button class="acc-head" (click)="toggle('projects')">
+      <span class="acc-icon">🚀</span>
+      <div class="acc-info"><span class="acc-title">Projects</span><span class="acc-sub">Title, bullets, card</span></div>
+      <svg class="acc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body">
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Title Size: {{ resumeData.styleConfig.projects.titleFontSize }}px</div>
+          <input type="range" min="10" max="20" [(ngModel)]="resumeData.styleConfig.projects.titleFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Title Weight</div>
+          <select [(ngModel)]="resumeData.styleConfig.projects.titleFontWeight" (ngModelChange)="emit()">
+            <option *ngFor="let w of fontWeights" [value]="w.value">{{ w.label }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">Tech Size: {{ resumeData.styleConfig.projects.techFontSize }}px</div>
+          <input type="range" min="9" max="15" [(ngModel)]="resumeData.styleConfig.projects.techFontSize" (ngModelChange)="emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">Bullet Size: {{ resumeData.styleConfig.projects.bulletFontSize }}px</div>
+          <input type="range" min="10" max="16" [(ngModel)]="resumeData.styleConfig.projects.bulletFontSize" (ngModelChange)="emit()" />
+        </div>
+      </div>
+      <div class="ctrl-label mt">Bullet Style</div>
+      <div class="chip-row wrap">
+        <button *ngFor="let b of bulletOptions" class="chip"
+          [class.active]="resumeData.styleConfig.projects.bulletChar===b.value"
+          (click)="resumeData.styleConfig.projects.bulletChar=b.value;emit()">{{ b.label }}</button>
+      </div>
+      <div class="toggle-row">
+        <span class="ctrl-label">Card Background</span>
+        <label class="tog">
+          <input type="checkbox" [(ngModel)]="resumeData.styleConfig.projects.cardBackground" (ngModelChange)="emit()" />
+          <span class="tog-thumb"></span>
+        </label>
+      </div>
+      <button class="reset-sm" (click)="resetSection('projects')">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- ══ LANGUAGES ══ -->
+  <div class="acc" [class.open]="openSection==='languages'">
+    <button class="acc-head" (click)="toggle('languages')">
+      <span class="acc-icon">🌐</span>
+      <div class="acc-info"><span class="acc-title">Languages</span><span class="acc-sub">Tag style, size</span></div>
+      <svg class="acc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body">
+      <div class="ctrl-group">
+        <div class="ctrl-label">Font Size: {{ resumeData.styleConfig.languages.fontSize }}px</div>
+        <input type="range" min="9" max="16" [(ngModel)]="resumeData.styleConfig.languages.fontSize" (ngModelChange)="emit()" />
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">H Padding: {{ resumeData.styleConfig.languages.tagPaddingH }}px</div>
+          <input type="range" min="2" max="24"
+            [ngModel]="resumeData.styleConfig.languages.tagPaddingH"
+            (ngModelChange)="resumeData.styleConfig.languages.tagPaddingH=$event; emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">V Padding: {{ resumeData.styleConfig.languages.tagPaddingV }}px</div>
+          <input type="range" min="1" max="16"
+            [ngModel]="resumeData.styleConfig.languages.tagPaddingV"
+            (ngModelChange)="resumeData.styleConfig.languages.tagPaddingV=$event; emit()" />
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Gap between tags: {{ resumeData.styleConfig.languages.tagGap }}px</div>
+        <input type="range" min="2" max="20"
+          [ngModel]="resumeData.styleConfig.languages.tagGap"
+          (ngModelChange)="resumeData.styleConfig.languages.tagGap=$event; emit()" />
+      </div>
+      <div class="toggle-row">
+        <span class="ctrl-label">Tag Style: Plain → Bordered</span>
+        <label class="tog">
+          <input type="checkbox" [(ngModel)]="resumeData.styleConfig.languages.tagBordered" (ngModelChange)="emit()" />
+          <span class="tog-thumb"></span>
+        </label>
+      </div>
+      <div class="preview-row">
+        <span class="preview-tag"
+          [style.font-size]="resumeData.styleConfig.languages.fontSize+'px'"
+          [style.padding]="(resumeData.styleConfig.languages.tagPaddingV)+'px '+(resumeData.styleConfig.languages.tagPaddingH)+'px'"
+          [style.border-color]="resumeData.styleConfig.languages.tagBordered ? resumeData.styleConfig.accentColor : 'transparent'"
+          [style.color]="resumeData.styleConfig.languages.tagBordered ? resumeData.styleConfig.accentColor : '#4b5563'"
+          [style.background]="resumeData.styleConfig.languages.tagBordered ? resumeData.styleConfig.accentColor+'18' : 'transparent'">
+          Malayalam
+        </span>
+        <span class="preview-tag"
+          [style.font-size]="resumeData.styleConfig.languages.fontSize+'px'"
+          [style.padding]="(resumeData.styleConfig.languages.tagPaddingV)+'px '+(resumeData.styleConfig.languages.tagPaddingH)+'px'"
+          [style.border-color]="resumeData.styleConfig.languages.tagBordered ? resumeData.styleConfig.accentColor : 'transparent'"
+          [style.color]="resumeData.styleConfig.languages.tagBordered ? resumeData.styleConfig.accentColor : '#4b5563'"
+          [style.background]="resumeData.styleConfig.languages.tagBordered ? resumeData.styleConfig.accentColor+'18' : 'transparent'">
+          English
+        </span>
+      </div>
+      <button class="reset-sm" (click)="resetSection('languages')">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- ══ SOFT SKILLS ══ -->
+  <div class="acc" [class.open]="openSection==='softSkills'">
+    <button class="acc-head" (click)="toggle('softSkills')">
+      <span class="acc-icon">🤝</span>
+      <div class="acc-info"><span class="acc-title">Soft Skills</span><span class="acc-sub">Tag style, size</span></div>
+      <svg class="acc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="acc-body">
+      <div class="ctrl-group">
+        <div class="ctrl-label">Font Size: {{ resumeData.styleConfig.softSkills.fontSize }}px</div>
+        <input type="range" min="9" max="16" [(ngModel)]="resumeData.styleConfig.softSkills.fontSize" (ngModelChange)="emit()" />
+      </div>
+      <div class="two-col">
+        <div class="ctrl-group">
+          <div class="ctrl-label">H Padding: {{ resumeData.styleConfig.softSkills.tagPaddingH }}px</div>
+          <input type="range" min="2" max="24"
+            [ngModel]="resumeData.styleConfig.softSkills.tagPaddingH"
+            (ngModelChange)="resumeData.styleConfig.softSkills.tagPaddingH=$event; emit()" />
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label">V Padding: {{ resumeData.styleConfig.softSkills.tagPaddingV }}px</div>
+          <input type="range" min="1" max="16"
+            [ngModel]="resumeData.styleConfig.softSkills.tagPaddingV"
+            (ngModelChange)="resumeData.styleConfig.softSkills.tagPaddingV=$event; emit()" />
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Gap between tags: {{ resumeData.styleConfig.softSkills.tagGap }}px</div>
+        <input type="range" min="2" max="20"
+          [ngModel]="resumeData.styleConfig.softSkills.tagGap"
+          (ngModelChange)="resumeData.styleConfig.softSkills.tagGap=$event; emit()" />
+      </div>
+      <div class="toggle-row">
+        <span class="ctrl-label">Tag Style: Plain → Bordered</span>
+        <label class="tog">
+          <input type="checkbox" [(ngModel)]="resumeData.styleConfig.softSkills.tagBordered" (ngModelChange)="emit()" />
+          <span class="tog-thumb"></span>
+        </label>
+      </div>
+      <div class="preview-row">
+        <span class="preview-tag"
+          [style.font-size]="resumeData.styleConfig.softSkills.fontSize+'px'"
+          [style.padding]="(resumeData.styleConfig.softSkills.tagPaddingV)+'px '+(resumeData.styleConfig.softSkills.tagPaddingH)+'px'"
+          [style.border-color]="resumeData.styleConfig.softSkills.tagBordered ? resumeData.styleConfig.accentColor : 'transparent'"
+          [style.color]="resumeData.styleConfig.softSkills.tagBordered ? resumeData.styleConfig.accentColor : '#4b5563'"
+          [style.background]="resumeData.styleConfig.softSkills.tagBordered ? resumeData.styleConfig.accentColor+'18' : 'transparent'">
+          Leadership
+        </span>
+        <span class="preview-tag"
+          [style.font-size]="resumeData.styleConfig.softSkills.fontSize+'px'"
+          [style.padding]="(resumeData.styleConfig.softSkills.tagPaddingV)+'px '+(resumeData.styleConfig.softSkills.tagPaddingH)+'px'"
+          [style.border-color]="resumeData.styleConfig.softSkills.tagBordered ? resumeData.styleConfig.accentColor : 'transparent'"
+          [style.color]="resumeData.styleConfig.softSkills.tagBordered ? resumeData.styleConfig.accentColor : '#4b5563'"
+          [style.background]="resumeData.styleConfig.softSkills.tagBordered ? resumeData.styleConfig.accentColor+'18' : 'transparent'">
+          Teamwork
+        </span>
+      </div>
+      <button class="reset-sm" (click)="resetSection('softSkills')">↺ Reset</button>
+    </div>
+  </div>
+
 </div>

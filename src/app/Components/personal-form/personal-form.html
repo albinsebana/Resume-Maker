@@ -7,39 +7,6 @@
     </div>
   </div>
 
-  <!-- ── PHOTO UPLOAD ── -->
-  <div class="photo-section">
-    <div class="photo-label">
-      Profile Photo
-      <span class="optional">(optional · Modern template only)</span>
-    </div>
-
-    <div class="photo-upload-area">
-      <!-- Preview -->
-      <div class="photo-preview" *ngIf="resumeData.personalInfo.photo">
-        <img [src]="resumeData.personalInfo.photo" alt="Profile photo" />
-        <button class="remove-photo-btn" (click)="removePhoto()" title="Remove photo">✕</button>
-      </div>
-
-      <!-- Upload placeholder -->
-      <label class="photo-placeholder" *ngIf="!resumeData.personalInfo.photo">
-        <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden />
-        <span class="upload-icon">📷</span>
-        <span class="upload-text">Click to upload</span>
-        <span class="upload-hint">JPG, PNG · Max 2MB</span>
-      </label>
-
-      <!-- Change button when photo exists -->
-      <label class="change-photo-btn" *ngIf="resumeData.personalInfo.photo">
-        <input type="file" accept="image/*" (change)="onPhotoSelected($event)" hidden />
-        📷 Change Photo
-      </label>
-    </div>
-  </div>
-
-  <div class="form-divider"></div>
-
-  <!-- ── PERSONAL DETAILS ── -->
   <div class="form-group">
     <label>Full Name <span class="required">*</span></label>
     <input type="text" placeholder="e.g. Albin Sebana Kurian"
@@ -55,33 +22,119 @@
   <div class="form-row">
     <div class="form-group">
       <label>Email <span class="required">*</span></label>
-      <input type="email" placeholder="you@example.com"
-        [(ngModel)]="resumeData.personalInfo.email" (ngModelChange)="emit()" />
+      <div class="input-icon-wrap">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        <input type="email" placeholder="you@example.com"
+          [(ngModel)]="resumeData.personalInfo.email" (ngModelChange)="emit()" />
+      </div>
     </div>
     <div class="form-group">
       <label>Phone</label>
-      <input type="tel" placeholder="+91 98765 43210"
-        [(ngModel)]="resumeData.personalInfo.phone" (ngModelChange)="emit()" />
+      <div class="input-icon-wrap">
+        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.61 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <input type="tel" placeholder="+91 98765 43210"
+          [(ngModel)]="resumeData.personalInfo.phone" (ngModelChange)="emit()" />
+      </div>
     </div>
   </div>
 
-  <div class="form-row">
-    <div class="form-group">
-      <label>Location</label>
+  <div class="form-group">
+    <label>Location</label>
+    <div class="input-icon-wrap">
+      <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
       <input type="text" placeholder="Kochi, Kerala"
         [(ngModel)]="resumeData.personalInfo.location" (ngModelChange)="emit()" />
     </div>
-    <div class="form-group">
-      <label>LinkedIn / Website</label>
-      <input type="url" placeholder="linkedin.com/in/..."
-        [(ngModel)]="resumeData.personalInfo.website" (ngModelChange)="emit()" />
+  </div>
+
+  <!-- ── LINKEDIN ── -->
+  <div class="link-card">
+    <div class="link-card-header">
+      <div class="link-card-title">
+        <svg viewBox="0 0 24 24" fill="#0077b5" width="15" height="15">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+          <rect x="2" y="9" width="4" height="12"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+        <span>LinkedIn</span>
+      </div>
+      <div class="mask-toggle-wrap">
+        <span class="mask-label">Mask URL</span>
+        <label class="mini-toggle">
+          <input type="checkbox"
+            [(ngModel)]="resumeData.personalInfo.linkedinMask"
+            (ngModelChange)="emit()" />
+          <span class="mini-thumb"></span>
+        </label>
+      </div>
+    </div>
+    <input type="url" placeholder="https://linkedin.com/in/yourname"
+      [(ngModel)]="resumeData.personalInfo.linkedin" (ngModelChange)="emit()" />
+    <div class="mask-label-input" *ngIf="resumeData.personalInfo.linkedinMask">
+      <span class="mask-hint">→ Show as:</span>
+      <input type="text" placeholder='e.g. "LinkedIn Profile" or "Albin on LinkedIn"'
+        [(ngModel)]="resumeData.personalInfo.linkedinLabel" (ngModelChange)="emit()" />
+    </div>
+    <div class="link-preview" *ngIf="resumeData.personalInfo.linkedin">
+      <span class="preview-badge">Preview:</span>
+      <span class="preview-text">
+        {{ resumeData.personalInfo.linkedinMask && resumeData.personalInfo.linkedinLabel
+           ? resumeData.personalInfo.linkedinLabel
+           : (resumeData.personalInfo.linkedin | slice:0:60) }}
+      </span>
+    </div>
+  </div>
+
+  <!-- ── PORTFOLIO ── -->
+  <div class="link-card">
+    <div class="link-card-header">
+      <div class="link-card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <span>Portfolio / Website</span>
+      </div>
+      <div class="mask-toggle-wrap">
+        <span class="mask-label">Mask URL</span>
+        <label class="mini-toggle">
+          <input type="checkbox"
+            [(ngModel)]="resumeData.personalInfo.portfolioMask"
+            (ngModelChange)="emit()" />
+          <span class="mini-thumb"></span>
+        </label>
+      </div>
+    </div>
+    <input type="url" placeholder="https://yourportfolio.com"
+      [(ngModel)]="resumeData.personalInfo.portfolio" (ngModelChange)="emit()" />
+    <div class="mask-label-input" *ngIf="resumeData.personalInfo.portfolioMask">
+      <span class="mask-hint">→ Show as:</span>
+      <input type="text" placeholder='e.g. "My Portfolio" or "albinsebana.github.io"'
+        [(ngModel)]="resumeData.personalInfo.portfolioLabel" (ngModelChange)="emit()" />
+    </div>
+    <div class="link-preview" *ngIf="resumeData.personalInfo.portfolio">
+      <span class="preview-badge">Preview:</span>
+      <span class="preview-text">
+        {{ resumeData.personalInfo.portfolioMask && resumeData.personalInfo.portfolioLabel
+           ? resumeData.personalInfo.portfolioLabel
+           : (resumeData.personalInfo.portfolio | slice:0:60) }}
+      </span>
     </div>
   </div>
 
   <div class="form-group">
     <label>Professional Summary</label>
-    <textarea rows="5"
-      placeholder="Brief 2–3 sentence summary of your experience and strengths..."
+    <textarea rows="6" placeholder="Brief 2–3 sentence summary..."
       [(ngModel)]="resumeData.personalInfo.summary" (ngModelChange)="emit()"></textarea>
   </div>
+
 </div>

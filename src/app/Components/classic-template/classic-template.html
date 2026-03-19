@@ -1,91 +1,255 @@
-<div class="resume-doc" id="resume-print" [ngStyle]="styles">
+<div class="resume-doc classic" id="resume-print" [ngStyle]="styles">
 
-  <!-- HEADER -->
+  <!-- ══ HEADER ══ -->
   <div class="c-header">
-    <h1 class="c-name">{{ resumeData.personalInfo.fullName || 'Your Full Name' }}</h1>
-    <p class="c-jobtitle">{{ resumeData.personalInfo.jobTitle }}</p>
+    <h1 class="c-name"
+      [style.font-size]="s.personal.nameFontSize + 'px'"
+      [style.font-weight]="s.personal.nameFontWeight">
+      {{ resumeData.personalInfo.fullName || 'Your Full Name' }}
+    </h1>
+    <p class="c-jobtitle"
+      [style.font-size]="s.personal.jobTitleFontSize + 'px'"
+      [style.color]="s.personal.jobTitleColor === 'accent' ? s.accentColor : s.personal.jobTitleColor">
+      {{ resumeData.personalInfo.jobTitle }}
+    </p>
     <div class="c-contacts">
-      <span *ngIf="resumeData.personalInfo.email">✉ {{ resumeData.personalInfo.email }}</span>
-      <span *ngIf="resumeData.personalInfo.phone">📞 {{ resumeData.personalInfo.phone }}</span>
-      <span *ngIf="resumeData.personalInfo.location">📍 {{ resumeData.personalInfo.location }}</span>
-      <span *ngIf="resumeData.personalInfo.website">🔗 {{ resumeData.personalInfo.website }}</span>
+
+      <!-- Email — clicks to open mail client -->
+      <a *ngIf="resumeData.personalInfo.email"
+        [href]="'mailto:' + resumeData.personalInfo.email"
+        class="c-contact-link"
+        [style.font-size]="s.personal.contactFontSize + 'px'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="c-contact-icon">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        {{ resumeData.personalInfo.email }}
+      </a>
+
+      <!-- Phone — clicks to call -->
+      <a *ngIf="resumeData.personalInfo.phone"
+        [href]="'tel:' + resumeData.personalInfo.phone"
+        class="c-contact-link"
+        [style.font-size]="s.personal.contactFontSize + 'px'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="c-contact-icon">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.61 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        {{ resumeData.personalInfo.phone }}
+      </a>
+
+      <!-- Location -->
+      <span *ngIf="resumeData.personalInfo.location"
+        class="c-contact-link no-link"
+        [style.font-size]="s.personal.contactFontSize + 'px'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="c-contact-icon">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        {{ resumeData.personalInfo.location }}
+      </span>
+
+      <!-- LinkedIn — clicks to open profile -->
+      <a *ngIf="resumeData.personalInfo.linkedin"
+        [href]="resumeData.personalInfo.linkedin.startsWith('http') ? resumeData.personalInfo.linkedin : 'https://' + resumeData.personalInfo.linkedin"
+        target="_blank" rel="noopener"
+        class="c-contact-link"
+        [style.font-size]="s.personal.contactFontSize + 'px'">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="c-contact-icon linkedin-blue">
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+          <rect x="2" y="9" width="4" height="12"/>
+          <circle cx="4" cy="4" r="2"/>
+        </svg>
+        {{ (resumeData.personalInfo.linkedinMask && resumeData.personalInfo.linkedinLabel)
+           ? resumeData.personalInfo.linkedinLabel
+           : (resumeData.personalInfo.linkedin | slice:0:30) }}
+      </a>
+
+      <!-- Portfolio — clicks to open site -->
+      <a *ngIf="resumeData.personalInfo.portfolio"
+        [href]="resumeData.personalInfo.portfolio.startsWith('http') ? resumeData.personalInfo.portfolio : 'https://' + resumeData.personalInfo.portfolio"
+        target="_blank" rel="noopener"
+        class="c-contact-link"
+        [style.font-size]="s.personal.contactFontSize + 'px'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="c-contact-icon">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        {{ (resumeData.personalInfo.portfolioMask && resumeData.personalInfo.portfolioLabel)
+           ? resumeData.personalInfo.portfolioLabel
+           : (resumeData.personalInfo.portfolio | slice:0:60) }}
+      </a>
+
+      <!-- Legacy website field fallback -->
+      <a *ngIf="resumeData.personalInfo.website && !resumeData.personalInfo.portfolio && !resumeData.personalInfo.linkedin"
+        [href]="resumeData.personalInfo.website.startsWith('http') ? resumeData.personalInfo.website : 'https://' + resumeData.personalInfo.website"
+        target="_blank" rel="noopener"
+        class="c-contact-link"
+        [style.font-size]="s.personal.contactFontSize + 'px'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="c-contact-icon">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        {{ (resumeData.personalInfo.websiteMask && resumeData.personalInfo.websiteLabel)
+           ? resumeData.personalInfo.websiteLabel
+           : (resumeData.personalInfo.website | slice:0:30) }}
+      </a>
+
     </div>
   </div>
 
-  <!-- SUMMARY -->
-  <div *ngIf="resumeData.personalInfo.summary" class="c-section">
-    <div class="c-section-title">SUMMARY</div>
-    <p class="c-body">{{ resumeData.personalInfo.summary }}</p>
+  <!-- ══ SUMMARY ══ -->
+  <div *ngIf="resumeData.personalInfo.summary" class="c-section"
+    [style.margin-bottom]="s.sectionSpacing + 'px'">
+    <div class="c-section-title"
+      [style.font-size]="s.sectionTitleSize + 'px'"
+      [style.font-weight]="s.sectionTitleWeight">
+      SUMMARY
+    </div>
+    <p class="c-body"
+      [style.font-size]="s.personal.summaryFontSize + 'px'"
+      [style.line-height]="s.lineHeight || s.personal.summaryLineHeight">
+      {{ resumeData.personalInfo.summary }}
+    </p>
   </div>
 
-  <!-- EXPERIENCE -->
-  <div *ngIf="resumeData.experiences.length > 0" class="c-section">
-    <div class="c-section-title">PROFESSIONAL EXPERIENCE</div>
-    <div *ngFor="let exp of resumeData.experiences" class="c-entry">
+  <!-- ══ EXPERIENCE ══ -->
+  <div *ngIf="resumeData.experiences.length > 0" class="c-section"
+    [style.margin-bottom]="s.sectionSpacing + 'px'">
+    <div class="c-section-title"
+      [style.font-size]="s.sectionTitleSize + 'px'"
+      [style.font-weight]="s.sectionTitleWeight">
+      PROFESSIONAL EXPERIENCE
+    </div>
+    <div *ngFor="let exp of resumeData.experiences" class="c-entry"
+      [style.margin-bottom]="s.experience.entrySpacing + 'px'">
       <div class="c-entry-top">
         <div class="c-entry-left">
-          <strong class="c-entry-title">{{ exp.position }}</strong>
-          <span class="c-entry-org">{{ exp.company }}</span>
+          <strong class="c-entry-title"
+            [style.font-size]="s.experience.titleFontSize + 'px'"
+            [style.font-weight]="s.experience.titleFontWeight">
+            {{ exp.position }}
+          </strong>
+          <span class="c-entry-org"
+            [style.font-size]="s.experience.companyFontSize + 'px'"
+            [style.color]="s.experience.companyColor === 'accent' ? s.accentColor : s.experience.companyColor">
+            {{ exp.company }}
+          </span>
         </div>
-        <span class="c-date">
+        <span class="c-date"
+          [style.font-size]="s.experience.dateFontSize + 'px'">
           {{ formatDate(exp.startDate) }} –
           {{ exp.isCurrent ? 'Present' : formatDate(exp.endDate) }}
         </span>
       </div>
       <div *ngIf="exp.description" class="c-desc">
         <div *ngFor="let line of exp.description.split('\n')"
-          class="c-bullet" [class.has-bullet]="line.trim().length > 0">
+          class="c-bullet"
+          [class.has-bullet]="line.trim().length > 0"
+          [style.font-size]="s.experience.bulletFontSize + 'px'"
+          [style.line-height]="s.lineHeight || s.experience.bulletLineHeight"
+          [attr.data-bullet]="s.experience.bulletChar">
           {{ line }}
         </div>
       </div>
     </div>
   </div>
 
-  <!-- PROJECTS -->
-  <div *ngIf="resumeData.projects.length > 0" class="c-section">
-    <div class="c-section-title">PROJECT EXPERIENCE</div>
-    <div *ngFor="let proj of resumeData.projects" class="c-entry">
+  <!-- ══ PROJECTS ══ -->
+  <div *ngIf="resumeData.projects.length > 0" class="c-section"
+    [style.margin-bottom]="s.sectionSpacing + 'px'">
+    <div class="c-section-title"
+      [style.font-size]="s.sectionTitleSize + 'px'"
+      [style.font-weight]="s.sectionTitleWeight">
+      PROJECT EXPERIENCE
+    </div>
+    <div *ngFor="let proj of resumeData.projects" class="c-entry c-project-entry"
+      [class.c-card]="s.projects.cardBackground">
       <div class="c-entry-top">
         <div class="c-entry-left">
-          <strong class="c-entry-title">{{ proj.name }}</strong>
-          <span *ngIf="proj.technologies" class="c-tech">{{ proj.technologies }}</span>
+          <strong class="c-entry-title"
+            [style.font-size]="s.projects.titleFontSize + 'px'"
+            [style.font-weight]="s.projects.titleFontWeight">
+            {{ proj.name }}
+          </strong>
+          <span *ngIf="proj.technologies" class="c-tech"
+            [style.font-size]="s.projects.techFontSize + 'px'">
+            {{ proj.technologies }}
+          </span>
         </div>
         <span *ngIf="proj.link" class="c-link">{{ proj.link }}</span>
       </div>
       <div *ngIf="proj.description" class="c-desc">
         <div *ngFor="let line of proj.description.split('\n')"
-          class="c-bullet" [class.has-bullet]="line.trim().length > 0">
+          class="c-bullet"
+          [class.has-bullet]="line.trim().length > 0"
+          [style.font-size]="s.projects.bulletFontSize + 'px'"
+          [style.line-height]="s.lineHeight || s.projects.bulletLineHeight"
+          [attr.data-bullet]="s.projects.bulletChar">
           {{ line }}
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SKILLS -->
-  <div *ngIf="resumeData.skills.length > 0" class="c-section">
-    <div class="c-section-title">TECHNICAL SKILLS</div>
-    <div *ngFor="let cat of skillCategories" class="c-skill-group">
-      <span class="c-skill-cat">{{ cat }}</span>
-      <div class="c-skill-tags">
-        <span *ngFor="let skill of getSkillsByCategory(cat)" class="c-skill-tag">
+  <!-- ══ SKILLS ══ -->
+  <div *ngIf="resumeData.skills.length > 0" class="c-section"
+    [style.margin-bottom]="s.sectionSpacing + 'px'">
+    <div class="c-section-title"
+      [style.font-size]="s.sectionTitleSize + 'px'"
+      [style.font-weight]="s.sectionTitleWeight">
+      TECHNICAL SKILLS
+    </div>
+    <div *ngFor="let cat of skillCategories" class="c-skill-group"
+      [style.margin-bottom]="(s.skills.rowGap) + 'px'">
+      <span class="c-skill-cat"
+        [style.font-size]="s.skills.categoryFontSize + 'px'"
+        [style.font-weight]="s.skills.categoryFontWeight">
+        {{ cat }}
+      </span>
+      <div class="c-skill-tags"
+        [style.gap]="(s.skills.headerSkillGap) + 'px'">
+        <span *ngFor="let skill of getSkillsByCategory(cat)"
+          class="c-skill-tag"
+          [class.c-tag-bordered]="s.skills.tagBordered"
+          [style.font-size]="s.skills.skillFontSize + 'px'"
+          [style.padding-left]="(s.skills.tagPaddingH) + 'px'"
+          [style.padding-right]="(s.skills.tagPaddingH) + 'px'"
+          [style.border-color]="s.skills.tagBordered ? s.accentColor : null"
+          [style.color]="s.skills.tagBordered ? s.accentColor : null"
+          [style.background]="s.skills.tagBordered ? s.accentColor + '18' : null">
           {{ skill.name }}
         </span>
       </div>
     </div>
   </div>
 
-  <!-- EDUCATION -->
-  <div *ngIf="resumeData.education.length > 0" class="c-section">
-    <div class="c-section-title">EDUCATION</div>
-    <div *ngFor="let edu of resumeData.education" class="c-entry">
+  <!-- ══ EDUCATION ══ -->
+  <div *ngIf="resumeData.education.length > 0" class="c-section"
+    [style.margin-bottom]="s.sectionSpacing + 'px'">
+    <div class="c-section-title"
+      [style.font-size]="s.sectionTitleSize + 'px'"
+      [style.font-weight]="s.sectionTitleWeight">
+      EDUCATION
+    </div>
+    <div *ngFor="let edu of resumeData.education" class="c-entry"
+      [style.margin-bottom]="s.education.entrySpacing + 'px'">
       <div class="c-entry-top">
         <div class="c-entry-left">
-          <strong class="c-entry-title">
+          <strong class="c-entry-title"
+            [style.font-size]="s.education.titleFontSize + 'px'"
+            [style.font-weight]="s.education.titleFontWeight">
             {{ edu.degree }}<ng-container *ngIf="edu.field"> ({{ edu.field }})</ng-container>
           </strong>
-          <span class="c-entry-org">{{ edu.institution }}</span>
+          <span class="c-entry-org"
+            [style.font-size]="s.education.institutionFontSize + 'px'"
+            [style.color]="s.education.institutionColor === 'accent' ? s.accentColor : s.education.institutionColor">
+            {{ edu.institution }}
+          </span>
         </div>
-        <span class="c-date">
+        <span class="c-date"
+          [style.font-size]="s.education.dateFontSize + 'px'">
           {{ formatYear(edu.startDate) }} – {{ formatYear(edu.endDate) }}
           <ng-container *ngIf="edu.grade"> · {{ edu.grade }}</ng-container>
         </span>
@@ -93,30 +257,58 @@
     </div>
   </div>
 
-  <!-- LANGUAGES + SOFT SKILLS (two-column) -->
+  <!-- ══ SOFT SKILLS + LANGUAGES ══ -->
   <div class="c-two-col"
-    *ngIf="resumeData.languages.length > 0 || resumeData.softSkills.length > 0">
+    *ngIf="resumeData.languages.length > 0 || resumeData.softSkills.length > 0"
+    [style.margin-bottom]="s.sectionSpacing + 'px'">
 
+    <!-- Soft Skills — left -->
+    <div *ngIf="resumeData.softSkills.length > 0" class="c-section">
+      <div class="c-section-title"
+        [style.font-size]="s.sectionTitleSize + 'px'"
+        [style.font-weight]="s.sectionTitleWeight">
+        SOFT SKILLS
+      </div>
+      <div class="c-soft-tags"
+        [style.gap]="(s.softSkills.tagGap) + 'px'">
+        <span *ngFor="let ss of resumeData.softSkills"
+          class="c-soft-tag"
+          [class.c-tag-bordered]="s.softSkills.tagBordered"
+          [style.font-size]="s.softSkills.fontSize + 'px'"
+          [style.padding]="(s.softSkills.tagPaddingV) + 'px ' + (s.softSkills.tagPaddingH) + 'px'"
+          [style.border-color]="s.softSkills.tagBordered ? s.accentColor : null"
+          [style.color]="s.softSkills.tagBordered ? s.accentColor : null"
+          [style.background]="s.softSkills.tagBordered ? s.accentColor + '18' : null">
+          {{ ss.name }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Languages — right -->
     <div *ngIf="resumeData.languages.length > 0" class="c-section">
-      <div class="c-section-title">LANGUAGES</div>
-      <div class="c-soft-tags">
-        <span *ngFor="let lang of resumeData.languages" class="c-soft-tag">
+      <div class="c-section-title"
+        [style.font-size]="s.sectionTitleSize + 'px'"
+        [style.font-weight]="s.sectionTitleWeight">
+        LANGUAGES
+      </div>
+      <div class="c-soft-tags"
+        [style.gap]="(s.languages.tagGap) + 'px'">
+        <span *ngFor="let lang of resumeData.languages"
+          class="c-soft-tag"
+          [class.c-tag-bordered]="s.languages.tagBordered"
+          [style.font-size]="s.languages.fontSize + 'px'"
+          [style.padding]="(s.languages.tagPaddingV) + 'px ' + (s.languages.tagPaddingH) + 'px'"
+          [style.border-color]="s.languages.tagBordered ? s.accentColor : null"
+          [style.color]="s.languages.tagBordered ? s.accentColor : null"
+          [style.background]="s.languages.tagBordered ? s.accentColor + '18' : null">
           {{ lang.name }}
         </span>
       </div>
     </div>
 
-    <div *ngIf="resumeData.softSkills.length > 0" class="c-section">
-      <div class="c-section-title">SOFT SKILLS</div>
-      <div class="c-soft-tags">
-        <span *ngFor="let ss of resumeData.softSkills" class="c-soft-tag">
-          {{ ss.name }}
-        </span>
-      </div>
-    </div>
   </div>
 
-  <!-- EMPTY STATE -->
+  <!-- Empty state -->
   <div *ngIf="isEmpty" class="c-empty">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" width="52" height="52">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>

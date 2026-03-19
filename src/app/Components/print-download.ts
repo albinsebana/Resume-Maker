@@ -67,11 +67,53 @@ export class PrintDownloadService {
   <title>Resume</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    @page { margin: 0; size: A4 portrait; }
+    /* Remove ALL browser print headers, footers, margins */
+    @page {
+      margin: 0mm !important;
+      padding: 0mm !important;
+      size: A4 portrait;
+      /* Remove header/footer areas completely */
+      margin-top: 0mm !important;
+      margin-bottom: 0mm !important;
+      margin-left: 0mm !important;
+      margin-right: 0mm !important;
+    }
+    @page :first { margin: 0mm !important; padding: 0mm !important; }
+    @page :left  { margin: 0mm !important; padding: 0mm !important; }
+    @page :right { margin: 0mm !important; padding: 0mm !important; }
+    @page :blank { margin: 0mm !important; }
+
     *, *::before, *::after { box-sizing: border-box; }
     h1,h2,h3,h4,h5,h6,p { margin: 0; }
-    html, body { margin: 0; padding: 0; background: white; font-family: ${fontFamily};
-      -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background: white;
+      font-family: ${fontFamily};
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      width: 210mm;
+    }
+
+    /* Prevent blank trailing page — content height only */
+    html { height: auto !important; }
+    body { height: auto !important; min-height: 0 !important; }
+
+    /* Keep sections together, avoid orphan page breaks */
+    .c-section, .c-entry, .c-two-col { page-break-inside: avoid; }
+    .c-section-title { page-break-after: avoid; }
+
+    /* Classic/Minimal/Executive — remove card styling for print */
+    .resume-doc.classic,
+    .resume-doc.minimal,
+    .resume-doc.executive {
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      max-width: 100% !important;
+      width: 210mm !important;
+      /* No min-height — content fills naturally, no forced blank space */
+    }
 
     :root {
       --accent: ${accent}; --heading-size: ${headingSize};
@@ -189,36 +231,220 @@ export class PrintDownloadService {
 </html>`;
   }
 
-  // ── PRINT ────────────────────────────────────────────────────────────────
-  print(): void {
+  // ── PRINT — uses jsPDF to open PDF in new tab (no browser header/footer) ──
+  async print(): Promise<void> {
     const resumeEl = document.getElementById('resume-print');
-    if (!resumeEl) { alert('Resume not found. Please fill in your details first.'); return; }
+    if (!resumeEl) { alert('Resume not found.'); return; }
 
-    const html = this.buildPrintHtml(resumeEl);
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
+    try {
+      await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
 
-    printWindow.document.write(html.replace('</body>', `
-      <script>
-        window.onload = function() { setTimeout(function() { window.print(); }, 600); };
-      </script></body>`));
-    printWindow.document.close();
+      const win = window as any;
+      const { jsPDF } = win.jspdf;
+
+      const A4_W = 210;
+      const A4_H = 297;
+
+      // Collect link positions before rendering
+      const resumeRect = resumeEl.getBoundingClientRect();
+      const links: { url: string; x: number; y: number; w: number; h: number }[] = [];
+      resumeEl.querySelectorAll('a[href]').forEach((el) => {
+        const a = el as HTMLAnchorElement;
+        if (!a.href || a.href.startsWith('javascript')) return;
+        const rect = a.getBoundingClientRect();
+        links.push({
+          url: a.href,
+          x: rect.left - resumeRect.left,
+          y: rect.top  - resumeRect.top,
+          w: rect.width,
+          h: rect.height,
+        });
+      });
+
+      const canvas = await win.html2canvas(resumeEl, {
+        scale: 2, useCORS: true, backgroundColor: '#ffffff',
+        logging: false, width: resumeEl.scrollWidth, height: resumeEl.scrollHeight,
+      });
+
+      const imgW     = canvas.width;
+      const imgH     = canvas.height;
+      const pxPerMm  = imgW / A4_W;
+      const pageH_px = A4_H * pxPerMm;
+      const totalPages = Math.ceil(imgH / pageH_px);
+
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+
+      for (let i = 0; i < totalPages; i++) {
+        if (i > 0) pdf.addPage();
+
+        const srcY  = i * pageH_px;
+        const srcH  = Math.min(pageH_px, imgH - srcY);
+        const destH = srcH / pxPerMm;
+
+        const pageCanvas = document.createElement('canvas');
+        pageCanvas.width  = imgW;
+        pageCanvas.height = srcH;
+        pageCanvas.getContext('2d')!.drawImage(canvas, 0, srcY, imgW, srcH, 0, 0, imgW, srcH);
+        pdf.addImage(pageCanvas.toDataURL('image/jpeg', 0.98), 'JPEG', 0, 0, A4_W, destH);
+
+        // Add clickable link annotations
+        links.forEach(link => {
+          const linkTop_mm = link.y / pxPerMm;
+          const linkBot_mm = (link.y + link.h) / pxPerMm;
+          const pageTop_mm = i * A4_H;
+          const pageBot_mm = (i + 1) * A4_H;
+          if (linkBot_mm < pageTop_mm || linkTop_mm > pageBot_mm) return;
+          pdf.link(link.x / pxPerMm, (link.y / pxPerMm) - pageTop_mm, link.w / pxPerMm, link.h / pxPerMm, { url: link.url });
+        });
+      }
+
+      // Open PDF in new tab for printing — no browser URL/date headers
+      const pdfBlob = pdf.output('blob');
+      const pdfUrl  = URL.createObjectURL(pdfBlob);
+      const newTab  = window.open(pdfUrl, '_blank');
+      if (newTab) {
+        newTab.onload = () => { newTab.print(); };
+      }
+
+    } catch (err) {
+      console.error('Print failed:', err);
+      // Fallback to browser print dialog
+      this.openPrintDialog();
+    }
   }
 
-  // ── DOWNLOAD PDF ─────────────────────────────────────────────────────────
-  downloadPdf(): void {
+  // ── DOWNLOAD PDF — image render + clickable link annotations ─────────────
+  async downloadPdf(filename = 'resume'): Promise<void> {
     const resumeEl = document.getElementById('resume-print');
     if (!resumeEl) return;
 
-    const html = this.buildPrintHtml(resumeEl);
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
+    try {
+      await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+      await this.loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
 
-    printWindow.document.write(html.replace('</body>', `
+      const win = window as any;
+      const { jsPDF } = win.jspdf;
+
+      const A4_W = 210;
+      const A4_H = 297;
+
+      // ── Collect all clickable links BEFORE rendering ──────────────────────
+      // We store their positions relative to the resume element
+      const resumeRect = resumeEl.getBoundingClientRect();
+      const links: { url: string; x: number; y: number; w: number; h: number }[] = [];
+
+      resumeEl.querySelectorAll('a[href]').forEach((el) => {
+        const a    = el as HTMLAnchorElement;
+        const href = a.href;
+        if (!href || href.startsWith('javascript')) return;
+
+        const rect = a.getBoundingClientRect();
+        links.push({
+          url: href,
+          x: rect.left - resumeRect.left,
+          y: rect.top  - resumeRect.top,
+          w: rect.width,
+          h: rect.height,
+        });
+      });
+
+      // ── Render resume to canvas ───────────────────────────────────────────
+      const canvas = await win.html2canvas(resumeEl, {
+        scale:           2,
+        useCORS:         true,
+        backgroundColor: '#ffffff',
+        logging:         false,
+        width:           resumeEl.scrollWidth,
+        height:          resumeEl.scrollHeight,
+      });
+
+      const imgW       = canvas.width;
+      const imgH       = canvas.height;
+      const pxPerMm    = imgW / A4_W;
+      const pageH_px   = A4_H * pxPerMm;
+      const totalPages = Math.ceil(imgH / pageH_px);
+
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit:        'mm',
+        format:      'a4',
+        compress:    true,
+      });
+
+      // ── Add each page as image ────────────────────────────────────────────
+      for (let i = 0; i < totalPages; i++) {
+        if (i > 0) pdf.addPage();
+
+        const srcY  = i * pageH_px;
+        const srcH  = Math.min(pageH_px, imgH - srcY);
+        const destH = srcH / pxPerMm;
+
+        const pageCanvas      = document.createElement('canvas');
+        pageCanvas.width      = imgW;
+        pageCanvas.height     = srcH;
+        const ctx = pageCanvas.getContext('2d')!;
+        ctx.drawImage(canvas, 0, srcY, imgW, srcH, 0, 0, imgW, srcH);
+        const pageImg = pageCanvas.toDataURL('image/jpeg', 0.98);
+
+        pdf.addImage(pageImg, 'JPEG', 0, 0, A4_W, destH);
+
+        // ── Add clickable link annotations on top of the image ────────────
+        links.forEach(link => {
+          // Convert pixel coords to mm for this page
+          const linkTop_mm    = link.y / pxPerMm;
+          const linkBottom_mm = (link.y + link.h) / pxPerMm;
+          const pageTop_mm    = i * A4_H;
+          const pageBot_mm    = (i + 1) * A4_H;
+
+          // Only add link if it falls within this page
+          if (linkBottom_mm < pageTop_mm || linkTop_mm > pageBot_mm) return;
+
+          const x = link.x / pxPerMm;
+          const y = (link.y / pxPerMm) - pageTop_mm;
+          const w = link.w / pxPerMm;
+          const h = link.h / pxPerMm;
+
+          // jsPDF link annotation — invisible but clickable
+          pdf.link(x, y, w, h, { url: link.url });
+        });
+      }
+
+      pdf.save(`${filename || 'resume'}.pdf`);
+
+    } catch (err) {
+      console.error('PDF generation failed, falling back to print dialog:', err);
+      this.openPrintDialog();
+    }
+  }
+
+  private openPrintDialog(): void {
+    const resumeEl = document.getElementById('resume-print');
+    if (!resumeEl) return;
+    const html = this.buildPrintHtml(resumeEl);
+    const w = window.open('', '_blank');
+    if (!w) return;
+    w.document.write(html.replace('</body>', `
       <script>
-        window.onload = function() { setTimeout(function() { window.print(); }, 600); };
+        window.onload = function() {
+          document.title = '';
+          Object.defineProperty(document, 'title', { get: function(){ return ''; }, set: function(){} });
+          setTimeout(function() { window.print(); }, 600);
+        };
       </script></body>`));
-    printWindow.document.close();
+    w.document.close();
+  }
+
+  private loadScript(src: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Don't load twice
+      if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload  = () => resolve();
+      s.onerror = () => reject(new Error(`Failed to load ${src}`));
+      document.head.appendChild(s);
+    });
   }
 
   // ── DOWNLOAD HTML ────────────────────────────────────────────────────────
