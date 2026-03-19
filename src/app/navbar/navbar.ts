@@ -1,6 +1,8 @@
-import { Component, HostListener } from '@angular/core';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { NavService } from '../Components/nav';
 
 @Component({
   selector: 'app-navbar',
@@ -9,28 +11,34 @@ import { CommonModule } from '@angular/common';
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
-export class Navbar {
+export class Navbar implements OnInit, OnDestroy {
   isOpen = false;
+  private sub: any;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private navService: NavService
+  ) {}
 
-  open()  { this.isOpen = true;  document.body.style.overflow = 'hidden'; }
-  close() { this.isOpen = false; document.body.style.overflow = ''; }
-  toggle() { this.isOpen ? this.close() : this.open(); }
+  ngOnInit() {
+    // Subscribe to NavService so any component can open/close the sidebar
+    this.sub = this.navService.isOpen$.subscribe(val => {
+      this.isOpen = val;
+    });
+  }
 
-  navigate(path: string) {
-    this.close();
-    this.router.navigate([path]);
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
+    document.body.style.overflow = '';
+  }
+
+  close() {
+    this.navService.close();
   }
 
   logout() {
-    this.close();
+    this.navService.close();
+    localStorage.clear();
     this.router.navigate(['/home']);
   }
-
-  // Expose open() for external trigger (called from resume-builder)
-  static instance: Navbar | null = null;
-
-  ngOnInit()    { Navbar.instance = this; }
-  ngOnDestroy() { Navbar.instance = null; document.body.style.overflow = ''; }
 }

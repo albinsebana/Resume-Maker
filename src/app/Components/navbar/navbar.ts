@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { NavService } from '../nav';
 
 @Component({
   selector: 'app-navbar',
@@ -12,31 +13,28 @@ import { Router } from '@angular/router';
 })
 export class Navbar implements OnInit, OnDestroy {
   isOpen = false;
+  private sub: any;
 
-  // Static instance so resume-builder can call open() directly
-  static instance: Navbar | null = null;
+  constructor(
+    private router: Router,
+    private navService: NavService
+  ) {}
 
-  constructor(private router: Router) {}
-
-  ngOnInit()    { Navbar.instance = this; }
-  ngOnDestroy() { Navbar.instance = null; document.body.style.overflow = ''; }
-
-  open() {
-    this.isOpen = true;
-    document.body.style.overflow = 'hidden';  // prevent scroll behind overlay
+  ngOnInit() {
+    this.sub = this.navService.isOpen$.subscribe((val: boolean) => {
+      this.isOpen = val;
+    });
   }
 
-  close() {
-    this.isOpen = false;
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
     document.body.style.overflow = '';
   }
 
-  toggle() {
-    this.isOpen ? this.close() : this.open();
-  }
+  close() { this.navService.close(); }
 
   logout() {
-    this.close();
+    this.navService.close();
     localStorage.clear();
     this.router.navigate(['/home']);
   }
