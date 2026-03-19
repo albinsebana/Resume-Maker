@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -6,34 +6,38 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, CommonModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
 })
-export class Navbar {
-  navOpen = false;
+export class Navbar implements OnInit, OnDestroy {
+  isOpen = false;
+
+  // Static instance so resume-builder can call open() directly
+  static instance: Navbar | null = null;
 
   constructor(private router: Router) {}
 
-  toggleNav() { this.navOpen = !this.navOpen; }
-  closeNav()  { this.navOpen = false; }
+  ngOnInit()    { Navbar.instance = this; }
+  ngOnDestroy() { Navbar.instance = null; document.body.style.overflow = ''; }
 
-  // Close nav when clicking outside
-  @HostListener('document:click', ['$event'])
-  onDocClick(e: Event) {
-    const target = e.target as HTMLElement;
-    if (!target.closest('.sidenav') && !target.closest('.hamburger-btn')) {
-      this.navOpen = false;
-    }
+  open() {
+    this.isOpen = true;
+    document.body.style.overflow = 'hidden';  // prevent scroll behind overlay
+  }
+
+  close() {
+    this.isOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  toggle() {
+    this.isOpen ? this.close() : this.open();
   }
 
   logout() {
-    this.navOpen = false;
+    this.close();
+    localStorage.clear();
     this.router.navigate(['/home']);
-  }
-
-  navigate(path: string) {
-    this.navOpen = false;
-    this.router.navigate([path]);
   }
 }
