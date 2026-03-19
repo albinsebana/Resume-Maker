@@ -1,7 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
+import { Navbar } from '../navbar/navbar';
 import { ClassicTemplateComponent } from '../Components/classic-template/classic-template';
 import { CreativeTemplateComponent } from '../Components/creative-template/creative-template';
+import { DownloadToolbarComponent } from '../Components/download-toolbar/download-toolbar';
 import { EducationFormComponent } from '../Components/education-form/education-form';
 import { ExecutiveTemplateComponent } from '../Components/executive-template/executive-template';
 import { ExperienceFormComponent } from '../Components/experience-form/experience-form';
@@ -14,9 +17,6 @@ import { SkillsFormComponent } from '../Components/skills-form/skills-form';
 import { SoftskillsFormComponent } from '../Components/softskills-form/softskills-form';
 import { StyleConfigComponent } from '../Components/style-config/style-config';
 import { ResumeData, StyleConfig } from '../resume.model';
-import { DownloadToolbarComponent } from '../Components/download-toolbar/download-toolbar';
-
-// Download toolbar
 
 type TemplateId = 'classic' | 'modern' | 'minimal' | 'executive' | 'creative';
 
@@ -25,22 +25,11 @@ type TemplateId = 'classic' | 'modern' | 'minimal' | 'executive' | 'creative';
   standalone: true,
   imports: [
     CommonModule,
-    // Section forms
-    PersonalFormComponent,
-    ExperienceFormComponent,
-    EducationFormComponent,
-    SkillsFormComponent,
-    ProjectsFormComponent,
-    LanguagesFormComponent,
-    SoftskillsFormComponent,
-    StyleConfigComponent,
-    // Templates
-    ClassicTemplateComponent,
-    ModernTemplateComponent,
-    MinimalTemplateComponent,
-    ExecutiveTemplateComponent,
-    CreativeTemplateComponent,
-    // Toolbar
+    PersonalFormComponent, ExperienceFormComponent, EducationFormComponent,
+    SkillsFormComponent, ProjectsFormComponent, LanguagesFormComponent,
+    SoftskillsFormComponent, StyleConfigComponent,
+    ClassicTemplateComponent, ModernTemplateComponent, MinimalTemplateComponent,
+    ExecutiveTemplateComponent, CreativeTemplateComponent,
     DownloadToolbarComponent,
   ],
   templateUrl: './resume-builder.html',
@@ -48,9 +37,10 @@ type TemplateId = 'classic' | 'modern' | 'minimal' | 'executive' | 'creative';
 })
 export class ResumeBuilder implements OnInit, OnDestroy {
 
-  activeSection: string  = 'personal';
+  activeSection: string      = 'personal';
   activeTemplate: TemplateId = 'classic';
   saveStatus: 'idle' | 'saving' | 'saved' = 'idle';
+  previewOpen = false;
   private autoSaveTimer: any;
 
   sections = [
@@ -65,25 +55,39 @@ export class ResumeBuilder implements OnInit, OnDestroy {
   ];
 
   templates: { id: TemplateId; label: string; desc: string }[] = [
-    { id: 'classic',   label: 'Classic',   desc: 'Clean serif'      },
-    { id: 'modern',    label: 'Modern',    desc: 'Dark sidebar'      },
-    { id: 'minimal',   label: 'Minimal',   desc: 'Ultra clean'       },
-    { id: 'executive', label: 'Executive', desc: 'Two-col formal'    },
-    { id: 'creative',  label: 'Creative',  desc: 'Bold & colorful'   },
+    { id: 'classic',   label: 'Classic',   desc: 'Clean serif'    },
+    { id: 'modern',    label: 'Modern',    desc: 'Dark sidebar'   },
+    { id: 'minimal',   label: 'Minimal',   desc: 'Ultra clean'    },
+    { id: 'executive', label: 'Executive', desc: 'Formal'         },
+    { id: 'creative',  label: 'Creative',  desc: 'Bold & vibrant' },
   ];
 
   resumeData!: ResumeData;
 
   ngOnInit()    { this.resumeData = this.load(); }
-  ngOnDestroy() { if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer); }
+  ngOnDestroy() {
+    if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer);
+    document.body.style.overflow = '';
+  }
+
+  // Opens the sidenav via the Navbar singleton
+  openNav() {
+    if (Navbar.instance) Navbar.instance.open();
+  }
+
+  openPreview() {
+    this.previewOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closePreview() {
+    this.previewOpen = false;
+    document.body.style.overflow = '';
+  }
 
   private defaultStyleConfig: StyleConfig = {
-    accentColor: '#4f46e5',
-    headingFontSize: 28,
-    sectionTitleSize: 12,
-    bodyFontSize: 13,
-    headingFontWeight: '700',
-    sectionTitleWeight: '700',
+    accentColor: '#4f46e5', headingFontSize: 28, sectionTitleSize: 12,
+    bodyFontSize: 13, headingFontWeight: '700', sectionTitleWeight: '700',
     fontFamily: "'Georgia', serif",
   };
 
@@ -95,9 +99,8 @@ export class ResumeBuilder implements OnInit, OnDestroy {
       if (!parsed.languages)   parsed.languages  = [];
       if (!parsed.softSkills)  parsed.softSkills  = [];
       if (!parsed.styleConfig) parsed.styleConfig = { ...this.defaultStyleConfig };
-      if (parsed.skills?.length && !(parsed.skills[0] as any).category) {
+      if (parsed.skills?.length && !(parsed.skills[0] as any).category)
         parsed.skills = parsed.skills.map((s: any) => ({ ...s, category: s.category || 'Other' }));
-      }
       return parsed;
     } catch { return this.getDefault(); }
   }
@@ -106,8 +109,7 @@ export class ResumeBuilder implements OnInit, OnDestroy {
     return {
       personalInfo: { fullName: '', jobTitle: '', email: '', phone: '', location: '', website: '', summary: '' },
       experiences: [], education: [], skills: [], projects: [],
-      languages: [], softSkills: [],
-      styleConfig: { ...this.defaultStyleConfig },
+      languages: [], softSkills: [], styleConfig: { ...this.defaultStyleConfig },
     };
   }
 
@@ -123,7 +125,7 @@ export class ResumeBuilder implements OnInit, OnDestroy {
   }
 
   clearAll() {
-    if (confirm('Clear all data and reset to defaults?')) {
+    if (confirm('Clear all data and reset?')) {
       this.resumeData = this.getDefault();
       localStorage.removeItem('resume_maker_data');
     }

@@ -9,12 +9,9 @@
 
   <div *ngFor="let lang of resumeData.languages" class="inline-row">
     <input type="text" class="inline-input"
-      placeholder="e.g. English, Malayalam..."
-      [(ngModel)]="lang.name" (ngModelChange)="emit()" />
-    <select class="cat-select"
-      [(ngModel)]="lang.proficiency" (ngModelChange)="emit()">
-      <option *ngFor="let p of proficiencies" [value]="p">{{ p }}</option>
-    </select>
+      placeholder="e.g. English, Malayalam…"
+      [(ngModel)]="lang.name"
+      (ngModelChange)="emit()" />
     <button class="remove-btn" (click)="remove(lang.id)">✕</button>
   </div>
 

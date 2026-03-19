@@ -14,12 +14,11 @@ export class LanguagesFormComponent {
   @Input()  resumeData!: ResumeData;
   @Output() dataChange = new EventEmitter<ResumeData>();
 
-  proficiencies = ['Native', 'Professional', 'Conversational', 'Basic'];
-
   add() {
     this.resumeData.languages.push({
       id: Date.now().toString(),
-      name: '', proficiency: 'Conversational'
+      name: '',
+      proficiency: ''   // kept in model but not used in UI
     });
     this.emit();
   }

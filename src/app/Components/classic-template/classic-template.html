@@ -99,9 +99,10 @@
 
     <div *ngIf="resumeData.languages.length > 0" class="c-section">
       <div class="c-section-title">LANGUAGES</div>
-      <div *ngFor="let lang of resumeData.languages" class="c-lang-row">
-        <span class="c-lang-name">{{ lang.name }}</span>
-        <span class="c-lang-level">{{ lang.proficiency }}</span>
+      <div class="c-soft-tags">
+        <span *ngFor="let lang of resumeData.languages" class="c-soft-tag">
+          {{ lang.name }}
+        </span>
       </div>
     </div>
 
